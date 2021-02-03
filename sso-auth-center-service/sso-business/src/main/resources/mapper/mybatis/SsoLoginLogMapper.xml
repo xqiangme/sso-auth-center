@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sso.dao.mapper.SsoLoginLogMapper">
+
+    <resultMap id="BaseResultMap" type="com.sso.dao.entity.SsoLoginLog">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="request_id" property="requestId" jdbcType="VARCHAR"/>
+        <result column="username" property="username" jdbcType="VARCHAR"/>
+        <result column="source_ip" property="sourceIp" jdbcType="VARCHAR"/>
+        <result column="source_address" property="sourceAddress" jdbcType="VARCHAR"/>
+        <result column="browser_name" property="browserName" jdbcType="VARCHAR"/>
+        <result column="operate_system" property="operateSystem" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+        <result column="login_time" property="loginTime" jdbcType="BIGINT"/>
+        <result column="operate_msg" property="operateMsg" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+      id,
+      request_id,
+      username,
+      source_ip,
+      source_address,
+      browser_name,
+      operate_system,
+      status,
+      login_time,
+      operate_msg,
+      create_time,
+      update_time
+    </sql>
+
+    <select id="getByRequestId" resultMap="BaseResultMap" parameterType="java.lang.String">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM sso_login_log
+        WHERE request_id = #{requestId,jdbcType=VARCHAR}
+    </select>
+
+    <select id="countByCondition" resultType="java.lang.Integer" parameterType="com.sso.dao.query.LoginLogQuery">
+        SELECT
+        COUNT(*)
+        FROM sso_login_log
+        <where>
+            <if test="usernameLike != null">
+                AND username LIKE CONCAT(#{usernameLike,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="status != null and status !=-1">
+                AND status = #{status,jdbcType=INTEGER}
+            </if>
+            <if test="loginStartTime != null ">
+                AND login_time <![CDATA[ >= ]]> #{loginStartTime,jdbcType=BIGINT}
+            </if>
+            <if test="loginStartTime != null ">
+                AND login_time <![CDATA[ <= ]]> #{loginEndTime,jdbcType=BIGINT}
+            </if>
+        </where>
+    </select>
+
+    <select id="listPageByCondition" resultMap="BaseResultMap" parameterType="com.sso.dao.query.LoginLogQuery">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM sso_login_log
+        <where>
+            <if test="usernameLike != null">
+                AND username LIKE CONCAT(#{usernameLike,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="status != null and status !=-1">
+                AND status = #{status,jdbcType=INTEGER}
+            </if>
+            <if test="loginStartTime != null ">
+                AND login_time <![CDATA[ >= ]]> #{loginStartTime,jdbcType=BIGINT}
+            </if>
+            <if test="loginStartTime != null ">
+                AND login_time <![CDATA[ <= ]]> #{loginEndTime,jdbcType=BIGINT}
+            </if>
+        </where>
+        ORDER BY id desc
+        LIMIT #{startRow}, #{pageSize}
+    </select>
+
+    <insert id="insert" parameterType="com.sso.dao.entity.SsoLoginLog">
+      INSERT INTO sso_login_log
+       (
+        id,
+        request_id,
+        username,
+        source_ip,
+        source_address,
+        browser_name,
+        operate_system,
+        status,
+        login_time,
+        operate_msg,
+        create_time,
+        update_time
+       )
+      values
+       (
+          #{id,jdbcType=BIGINT},
+          #{requestId,jdbcType=VARCHAR},
+          #{username,jdbcType=VARCHAR},
+          #{sourceIp,jdbcType=VARCHAR},
+          #{sourceAddress,jdbcType=VARCHAR},
+          #{browserName,jdbcType=VARCHAR},
+          #{operateSystem,jdbcType=VARCHAR},
+          #{status,jdbcType=INTEGER},
+          #{loginTime,jdbcType=BIGINT},
+          #{operateMsg,jdbcType=VARCHAR},
+          #{createTime,jdbcType=TIMESTAMP},
+          #{updateTime,jdbcType=TIMESTAMP}
+       )
+    </insert>
+
+    <insert id="insertSelective" parameterType="com.sso.dao.entity.SsoLoginLog">
+        INSERT INTO sso_login_log
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="requestId != null">
+                request_id,
+            </if>
+            <if test="username != null">
+                username,
+            </if>
+            <if test="sourceIp != null">
+                source_ip,
+            </if>
+            <if test="sourceAddress != null">
+                source_address,
+            </if>
+            <if test="browserName != null">
+                browser_name,
+            </if>
+            <if test="operateSystem != null">
+                operate_system,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+            <if test="loginTime != null">
+                login_time,
+            </if>
+            <if test="operateMsg != null">
+                operate_msg,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="requestId != null">
+                #{requestId,jdbcType=VARCHAR},
+            </if>
+            <if test="username != null">
+                #{username,jdbcType=VARCHAR},
+            </if>
+            <if test="sourceIp != null">
+                #{sourceIp,jdbcType=VARCHAR},
+            </if>
+            <if test="sourceAddress != null">
+                #{sourceAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="browserName != null">
+                #{browserName,jdbcType=VARCHAR},
+            </if>
+            <if test="operateSystem != null">
+                #{operateSystem,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=INTEGER},
+            </if>
+            <if test="loginTime != null">
+                #{loginTime,jdbcType=BIGINT},
+            </if>
+            <if test="operateMsg != null">
+                #{operateMsg,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+      DELETE FROM sso_login_log
+      WHERE id = #{id,jdbcType=BIGINT}
+    </delete>
+
+    <update id="updateByPrimaryKey" parameterType="com.sso.dao.entity.SsoLoginLog">
+      UPDATE sso_login_log
+      SET
+       request_id = #{requestId,jdbcType=VARCHAR},
+       username = #{username,jdbcType=VARCHAR},
+       source_ip = #{sourceIp,jdbcType=VARCHAR},
+       source_address = #{sourceAddress,jdbcType=VARCHAR},
+       browser_name = #{browserName,jdbcType=VARCHAR},
+       operate_system = #{operateSystem,jdbcType=VARCHAR},
+       status = #{status,jdbcType=INTEGER},
+       login_time = #{loginTime,jdbcType=BIGINT},
+       operate_msg = #{operateMsg,jdbcType=VARCHAR},
+       create_time = #{createTime,jdbcType=TIMESTAMP},
+       update_time = #{updateTime,jdbcType=TIMESTAMP}
+      WHERE id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <update id="updateByPrimaryKeySelective" parameterType="com.sso.dao.entity.SsoLoginLog">
+        UPDATE sso_login_log
+        <set>
+            <if test="requestId != null">
+                request_id = #{requestId,jdbcType=VARCHAR},
+            </if>
+            <if test="username != null">
+                username = #{username,jdbcType=VARCHAR},
+            </if>
+            <if test="sourceIp != null">
+                source_ip = #{sourceIp,jdbcType=VARCHAR},
+            </if>
+            <if test="sourceAddress != null">
+                source_address = #{sourceAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="browserName != null">
+                browser_name = #{browserName,jdbcType=VARCHAR},
+            </if>
+            <if test="operateSystem != null">
+                operate_system = #{operateSystem,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=INTEGER},
+            </if>
+            <if test="loginTime != null">
+                login_time = #{loginTime,jdbcType=BIGINT},
+            </if>
+            <if test="operateMsg != null">
+                operate_msg = #{operateMsg,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        WHERE id = #{id,jdbcType=BIGINT}
+    </update>
+</mapper>

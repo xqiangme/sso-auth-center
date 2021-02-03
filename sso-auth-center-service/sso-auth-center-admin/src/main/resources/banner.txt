@@ -1,0 +1,23 @@
+${AnsiColor.BRIGHT_RED}
+----------------------------------------
+ _______  _______  _______
+(  ____ \(  ____ \(  ___  )
+| (    \/| (    \/| (   ) |
+| (_____ | (_____ | |   | |
+(_____  )(_____  )| |   | |
+      ) |      ) || |   | |
+/\____) |/\____) || (___) |
+\_______)\_______)(_______)
+
+----------------------------------------
+${AnsiColor.GREEN}
+Application Env: ${spring.profiles.active}
+Application Port: ${server.port}
+Root Log Level: ${logging.level.root}
+Project Log Level: ${logging.level.com.sso}
+Spring Boot Version: ${spring-boot.version}
+${AnsiColor.BRIGHT_RED}
+温馨提示:
+编码千万行，注释第一行。
+代码不规范，复盘两行泪。
+${AnsiColor.GREEN}

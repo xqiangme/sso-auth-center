@@ -1,0 +1,418 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sso.dao.mapper.SsoMenuMapper">
+
+    <resultMap id="BaseResultMap" type="com.sso.dao.entity.SsoMenu">
+        <result column="menu_id" property="menuId" jdbcType="BIGINT"/>
+        <result column="menu_name" property="menuName" jdbcType="VARCHAR"/>
+        <result column="sys_code" property="sysCode" jdbcType="VARCHAR"/>
+        <result column="menu_type" property="menuType" jdbcType="VARCHAR"/>
+        <result column="menu_parent_id" property="menuParentId" jdbcType="BIGINT"/>
+        <result column="sort_num" property="sortNum" jdbcType="INTEGER"/>
+        <result column="path" property="path" jdbcType="VARCHAR"/>
+        <result column="icon" property="icon" jdbcType="VARCHAR"/>
+        <result column="component" property="component" jdbcType="VARCHAR"/>
+        <result column="permissions" property="permissions" jdbcType="VARCHAR"/>
+        <result column="use_type" property="useType" jdbcType="INTEGER"/>
+        <result column="visible" property="visible" jdbcType="INTEGER"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+        <result column="del_flag" property="delFlag" jdbcType="INTEGER"/>
+        <result column="remarks" property="remarks" jdbcType="VARCHAR"/>
+        <result column="create_by" property="createBy" jdbcType="VARCHAR"/>
+        <result column="update_by" property="updateBy" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+      menu_id,
+      menu_name,
+      sys_code,
+      menu_type,
+      menu_parent_id,
+      sort_num,
+      path,
+      icon,
+      component,
+      permissions,
+      use_type,
+      visible,
+      status,
+      del_flag,
+      remarks,
+      create_by,
+      update_by,
+      create_time,
+      update_time
+    </sql>
+
+    <sql id="A_Base_Column_List">
+      a.menu_id,
+      a.menu_name,
+      a.sys_code,
+      a.menu_type,
+      a.menu_parent_id,
+      a.sort_num,
+      a.path,
+      a.icon,
+      a.component,
+      a.permissions,
+      a.use_type,
+      a.visible,
+      a.status,
+      a.del_flag,
+      a.remarks,
+      a.create_by,
+      a.update_by,
+      a.create_time,
+      a.update_time
+    </sql>
+
+    <select id="getByMenuId" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM sso_menu
+        WHERE menu_id = #{menuId,jdbcType=BIGINT}
+    </select>
+
+    <select id="getBySysCodeAndName" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM sso_menu
+        WHERE del_flag=0
+        AND sys_code = #{sysCode,jdbcType=VARCHAR}
+        AND menu_name = #{menuName,jdbcType=VARCHAR}
+    </select>
+
+    <select id="getEnableMenuListBySysCode" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM sso_menu
+        WHERE del_flag=0
+        AND `status` = 0
+        AND menu_type IN ('M','C')
+        AND sys_code = #{sysCode,jdbcType=VARCHAR}
+        ORDER BY sort_num
+    </select>
+
+    <select id= "getMenuListBySysCodeAndUserId" resultMap="BaseResultMap">
+        SELECT DISTINCT
+        <include refid="A_Base_Column_List"/>
+        FROM sso_menu a
+        LEFT JOIN sso_role_menu b ON a.menu_id = b.menu_id
+        LEFT JOIN sso_role c ON b.role_id = c.role_id
+        LEFT JOIN sso_user_role d ON b.role_id = d.role_id
+        WHERE
+        a.del_flag = 0
+        AND c.del_flag = 0
+        AND c.`status` = 0
+        AND a.`status` = 0
+        AND a.sys_code = #{sysCode,jdbcType=VARCHAR}
+        AND d.sys_code = #{sysCode,jdbcType=VARCHAR}
+        AND d.user_id = #{userId,jdbcType=BIGINT}
+        OR (a.sys_code = #{sysCode,jdbcType=VARCHAR} and use_type=1 )
+        ORDER BY a.sort_num
+    </select>
+
+    <select id="countByCondition" resultType="java.lang.Integer" parameterType="com.sso.dao.query.SsoMenuQuery">
+        SELECT
+        COUNT(*)
+        FROM sso_menu
+        <where>
+            <if test="sysCode != null">
+                AND sys_code = #{sysCode,jdbcType=VARCHAR}
+            </if>
+            <if test="menuParentId != null">
+                AND menu_parent_id = #{menuParentId,jdbcType=BIGINT}
+            </if>
+            <if test="excludeMenuId != null">
+                AND menu_id != #{excludeMenuId,jdbcType=BIGINT}
+            </if>
+            <if test="menuName != null and menuName !=''">
+                AND menu_name = #{menuName,jdbcType=VARCHAR}
+            </if>
+            <if test="menuNameLike != null and menuNameLike !=''">
+                AND menu_name LIKE CONCAT(#{menuNameLike,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="status != null and status !=-1">
+                AND status = #{status,jdbcType=INTEGER}
+            </if>
+            <if test="delFlag != null">
+                AND del_flag = #{delFlag,jdbcType=INTEGER}
+            </if>
+        </where>
+    </select>
+
+    <select id="listByCondition" resultMap="BaseResultMap" parameterType="com.sso.dao.query.SsoMenuQuery">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM sso_menu
+        <where>
+            <if test="sysCode != null">
+                AND sys_code = #{sysCode,jdbcType=VARCHAR}
+            </if>
+            <if test="menuParentId != null">
+                AND menu_parent_id = #{menuParentId,jdbcType=BIGINT}
+            </if>
+            <if test="excludeMenuId != null">
+                AND menu_id != #{excludeMenuId,jdbcType=BIGINT}
+            </if>
+            <if test="menuName != null and menuName !=''">
+                AND menu_name = #{deptName,jdbcType=VARCHAR}
+            </if>
+            <if test="menuNameLike != null and menuNameLike !=''">
+                AND menu_name LIKE CONCAT(#{menuNameLike,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="status != null and status !=-1">
+                AND status = #{status,jdbcType=INTEGER}
+            </if>
+            <if test="delFlag != null">
+                AND del_flag = #{delFlag,jdbcType=INTEGER}
+            </if>
+        </where>
+        ORDER by sort_num
+    </select>
+
+    <insert id="insert" parameterType="com.sso.dao.entity.SsoMenu" useGeneratedKeys="true" keyProperty="menuId"
+            keyColumn="menu_id">
+      INSERT INTO sso_menu
+       (
+        menu_id,
+        menu_name,
+        sys_code,
+        menu_type,
+        menu_parent_id,
+        sort_num,
+        path,
+        icon,
+        component,
+        permissions,
+        use_type,
+        visible,
+        status,
+        del_flag,
+        remarks,
+        create_by,
+        update_by
+       )
+      values
+       (
+          #{menuId,jdbcType=BIGINT},
+          #{menuName,jdbcType=VARCHAR},
+          #{sysCode,jdbcType=VARCHAR},
+          #{menuType,jdbcType=VARCHAR},
+          #{menuParentId,jdbcType=BIGINT},
+          #{sortNum,jdbcType=INTEGER},
+          #{path,jdbcType=VARCHAR},
+          #{icon,jdbcType=VARCHAR},
+          #{component,jdbcType=VARCHAR},
+          #{permissions,jdbcType=VARCHAR},
+          #{useType,jdbcType=INTEGER},
+          #{visible,jdbcType=INTEGER},
+          #{status,jdbcType=INTEGER},
+          #{delFlag,jdbcType=INTEGER},
+          #{remarks,jdbcType=VARCHAR},
+          #{createBy,jdbcType=VARCHAR},
+          #{updateBy,jdbcType=VARCHAR}
+       )
+    </insert>
+
+    <insert id="insertSelective" parameterType="com.sso.dao.entity.SsoMenu" useGeneratedKeys="true" keyProperty="menuId"
+            keyColumn="menu_id">
+        INSERT INTO sso_menu
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="menuName != null">
+                menu_name,
+            </if>
+            <if test="sysCode != null">
+                sys_code,
+            </if>
+            <if test="menuType != null">
+                menu_type,
+            </if>
+            <if test="menuParentId != null">
+                menu_parent_id,
+            </if>
+            <if test="sortNum != null">
+                sort_num,
+            </if>
+            <if test="path != null">
+                path,
+            </if>
+            <if test="icon != null">
+                icon,
+            </if>
+            <if test="component != null">
+                component,
+            </if>
+            <if test="permissions != null">
+                permissions,
+            </if>
+            <if test="useType != null">
+                use_type,
+            </if>
+            <if test="visible != null">
+                visible,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+            <if test="delFlag != null">
+                del_flag,
+            </if>
+            <if test="remarks != null">
+                remarks,
+            </if>
+            <if test="createBy != null">
+                create_by,
+            </if>
+            <if test="updateBy != null">
+                update_by,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="menuName != null">
+                #{menuName,jdbcType=VARCHAR},
+            </if>
+            <if test="sysCode != null">
+                #{sysCode,jdbcType=VARCHAR},
+            </if>
+            <if test="menuType != null">
+                #{menuType,jdbcType=VARCHAR},
+            </if>
+            <if test="menuParentId != null">
+                #{menuParentId,jdbcType=BIGINT},
+            </if>
+            <if test="sortNum != null">
+                #{sortNum,jdbcType=INTEGER},
+            </if>
+            <if test="path != null">
+                #{path,jdbcType=VARCHAR},
+            </if>
+            <if test="icon != null">
+                #{icon,jdbcType=VARCHAR},
+            </if>
+            <if test="component != null">
+                #{component,jdbcType=VARCHAR},
+            </if>
+            <if test="permissions != null">
+                #{permissions,jdbcType=VARCHAR},
+            </if>
+            <if test="useType != null">
+                #{useType,jdbcType=INTEGER},
+            </if>
+            <if test="visible != null">
+                #{visible,jdbcType=INTEGER},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=INTEGER},
+            </if>
+            <if test="delFlag != null">
+                #{delFlag,jdbcType=INTEGER},
+            </if>
+            <if test="remarks != null">
+                #{remarks,jdbcType=VARCHAR},
+            </if>
+            <if test="createBy != null">
+                #{createBy,jdbcType=VARCHAR},
+            </if>
+            <if test="updateBy != null">
+                #{updateBy,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateByMenuId" parameterType="com.sso.dao.entity.SsoMenu">
+      UPDATE sso_menu
+      SET
+       menu_name = #{menuName,jdbcType=VARCHAR},
+       menu_type = #{menuType,jdbcType=VARCHAR},
+       menu_parent_id = #{menuParentId,jdbcType=BIGINT},
+       sort_num = #{sortNum,jdbcType=INTEGER},
+       path = #{path,jdbcType=VARCHAR},
+       icon = #{icon,jdbcType=VARCHAR},
+       component = #{component,jdbcType=VARCHAR},
+       permissions = #{permissions,jdbcType=VARCHAR},
+       use_type = #{useType,jdbcType=INTEGER},
+       visible = #{visible,jdbcType=INTEGER},
+       status = #{status,jdbcType=INTEGER},
+       remarks = #{remarks,jdbcType=VARCHAR},
+       update_by = #{updateBy,jdbcType=VARCHAR}
+      WHERE menu_id = #{menuId,jdbcType=BIGINT}
+    </update>
+
+    <update id="updateByMenuIdSelective" parameterType="com.sso.dao.entity.SsoMenu">
+        UPDATE sso_menu
+        <set>
+            <if test="menuName != null">
+                menu_name = #{menuName,jdbcType=VARCHAR},
+            </if>
+            <if test="sysCode != null">
+                sys_code = #{sysCode,jdbcType=VARCHAR},
+            </if>
+            <if test="menuType != null">
+                menu_type = #{menuType,jdbcType=VARCHAR},
+            </if>
+            <if test="menuParentId != null">
+                menu_parent_id = #{menuParentId,jdbcType=BIGINT},
+            </if>
+            <if test="sortNum != null">
+                sort_num = #{sortNum,jdbcType=INTEGER},
+            </if>
+            <if test="path != null">
+                path = #{path,jdbcType=VARCHAR},
+            </if>
+            <if test="icon != null">
+                icon = #{icon,jdbcType=VARCHAR},
+            </if>
+            <if test="component != null">
+                component = #{component,jdbcType=VARCHAR},
+            </if>
+            <if test="permissions != null">
+                permissions = #{permissions,jdbcType=VARCHAR},
+            </if>
+            <if test="useType != null">
+                use_type = #{userType,jdbcType=INTEGER},
+            </if>
+            <if test="visible != null">
+                visible = #{visible,jdbcType=INTEGER},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=INTEGER},
+            </if>
+            <if test="delFlag != null">
+                del_flag = #{delFlag,jdbcType=INTEGER},
+            </if>
+            <if test="remarks != null">
+                remarks = #{remarks,jdbcType=VARCHAR},
+            </if>
+            <if test="updateBy != null">
+                update_by = #{updateBy,jdbcType=VARCHAR},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        WHERE menu_id = #{menuId,jdbcType=BIGINT}
+    </update>
+
+    <select id="countBySysCode" resultType="java.lang.Integer">
+        SELECT count(*) FROM sso_menu
+        WHERE del_flag = 0
+        AND sys_code = #{sysCode,jdbcType=VARCHAR}
+    </select>
+
+</mapper>

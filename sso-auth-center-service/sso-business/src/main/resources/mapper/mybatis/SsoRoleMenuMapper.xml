@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sso.dao.mapper.SsoRoleMenuMapper">
+
+    <resultMap id="BaseResultMap" type="com.sso.dao.entity.SsoRoleMenu">
+        <result column="sys_code" property="sysCode" jdbcType="VARCHAR"/>
+        <result column="role_id" property="roleId" jdbcType="BIGINT"/>
+        <result column="menu_id" property="menuId" jdbcType="BIGINT"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+      sys_code,
+      role_id,
+      menu_id,
+      create_time,
+      update_time
+    </sql>
+
+    <select id="getMenuIdListByRoleId" resultType="java.lang.Long" parameterType="java.lang.Long">
+        SELECT
+          menu_id
+        FROM sso_role_menu
+        WHERE role_id = #{roleId,jdbcType=BIGINT}
+    </select>
+
+    <!-- 批量新增或更新-->
+    <insert id="batchSave" parameterType="java.util.List">
+        INSERT INTO sso_role_menu
+        (
+        sys_code,
+        role_id,
+        menu_id
+        )
+        VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.sysCode,jdbcType=VARCHAR},
+            #{item.roleId,jdbcType=BIGINT},
+            #{item.menuId,jdbcType=BIGINT}
+            )
+        </foreach>
+    </insert>
+
+    <insert id="insert" parameterType="com.sso.dao.entity.SsoRoleMenu">
+      INSERT INTO sso_role_menu
+       (
+        sys_code,
+        role_id,
+        menu_id
+       )
+      values
+       (
+          #{sysCode,jdbcType=VARCHAR},
+          #{roleId,jdbcType=BIGINT},
+          #{menuId,jdbcType=BIGINT}
+       )
+    </insert>
+
+    <insert id="insertSelective" parameterType="com.sso.dao.entity.SsoRoleMenu">
+        INSERT INTO sso_role_menu
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="sysCode != null">
+                sys_code,
+            </if>
+            <if test="roleId != null">
+                role_id,
+            </if>
+            <if test="menuId != null">
+                menu_id,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="sysCode != null">
+                #{sysCode,jdbcType=VARCHAR},
+            </if>
+            <if test="roleId != null">
+                #{roleId,jdbcType=BIGINT},
+            </if>
+            <if test="menuId != null">
+                #{menuId,jdbcType=BIGINT},
+            </if>
+        </trim>
+    </insert>
+
+    <delete id="deleteByRoleId" parameterType="java.lang.Long">
+      DELETE FROM sso_role_menu
+      WHERE role_id = #{roleId,jdbcType=BIGINT}
+    </delete>
+
+    <delete id="deleteByMenuId" parameterType="java.lang.Long">
+      DELETE FROM sso_role_menu
+      WHERE menu_id = #{menuId,jdbcType=BIGINT}
+    </delete>
+
+    <update id="updateByPrimaryKey" parameterType="com.sso.dao.entity.SsoRoleMenu">
+      UPDATE sso_role_menu
+      SET
+       sys_code = #{sysCode,jdbcType=VARCHAR},
+       role_id = #{roleId,jdbcType=BIGINT},
+       menu_id = #{menuId,jdbcType=BIGINT}
+      WHERE id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <update id="updateByPrimaryKeySelective" parameterType="com.sso.dao.entity.SsoRoleMenu">
+        UPDATE sso_role_menu
+        <set>
+            <if test="sysCode != null">
+                sys_code = #{sysCode,jdbcType=VARCHAR},
+            </if>
+            <if test="roleId != null">
+                role_id = #{roleId,jdbcType=BIGINT},
+            </if>
+            <if test="menuId != null">
+                menu_id = #{menuId,jdbcType=BIGINT},
+            </if>
+        </set>
+        WHERE id = #{id,jdbcType=BIGINT}
+    </update>
+
+</mapper>

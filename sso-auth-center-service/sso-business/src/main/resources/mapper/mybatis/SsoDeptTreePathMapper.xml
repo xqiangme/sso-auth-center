@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sso.dao.mapper.SsoDeptTreePathMapper">
+
+    <resultMap id="BaseResultMap" type="com.sso.dao.entity.SsoDeptTreePath">
+        <result column="ancestor" property="ancestor" jdbcType="BIGINT"/>
+        <result column="descendant" property="descendant" jdbcType="BIGINT"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+      ancestor,
+      descendant
+    </sql>
+
+    <!--插入新节点 -->
+    <insert id="insertBatch" parameterType="java.lang.Long">
+		INSERT INTO sso_dept_tree_path (ancestor,descendant)
+		SELECT t.ancestor,#{deptId,jdbcType=BIGINT} FROM sso_dept_tree_path AS t
+		WHERE t.descendant = #{deptParentId,jdbcType=BIGINT}
+		UNION ALL
+		SELECT #{deptId,jdbcType=BIGINT},#{deptId,jdbcType=BIGINT}
+	</insert>
+
+    <!--删除叶子节点 -->
+    <delete id="deleteLeaf" parameterType="java.lang.Long">
+		DELETE FROM
+		sso_dept_tree_path WHERE descendant = #{deptId,jdbcType=BIGINT}
+	</delete>
+
+    <!--删除子树 -->
+    <delete id="deleteChildTree" parameterType="java.lang.Long">
+		DELETE FROM
+		sso_dept_tree_path
+		WHERE descendant
+		IN (SELECT a.dept_id from (SELECT descendant dept_id FROM sso_dept_tree_path WHERE ancestor =
+		#{deptId,jdbcType=BIGINT}) a )
+	</delete>
+
+    <!--查询所有祖先 -->
+    <select id="getAllParent" resultMap="com.sso.dao.mapper.SsoDeptMapper.BaseResultMap"
+            parameterType="java.lang.Long">
+		SELECT c.* FROM sso_dept AS c
+		INNER JOIN sso_dept_tree_path t on c.dept_id = t.ancestor
+		WHERE t.descendant = #{deptId,jdbcType=BIGINT}
+	</select>
+
+    <!--查询所有后代 -->
+    <select id="getAllChild" resultMap="com.sso.dao.mapper.SsoDeptMapper.BaseResultMap"
+            parameterType="java.lang.Long">
+        SELECT c.* FROM sso_dept AS c
+        INNER JOIN sso_dept_tree_path t
+        ON c.dept_id = t.descendant
+        WHERE t.ancestor = #{deptId,jdbcType=BIGINT}
+    </select>
+
+</mapper>

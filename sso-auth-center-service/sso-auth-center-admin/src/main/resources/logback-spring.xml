@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <!-- 日志存放路径 -->
+    <springProperty scope="context" name="log.path" source="log.root.path"/>
+    <springProperty scope="context" name="log.level" source="logging.level.com.sso"/>
+    <!-- 日志输出格式  -->
+    <!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度,%msg：日志消息，%n是换行符-->
+    <property name="log.pattern"
+              value="%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %mdc{logId} [%thread] %logger{0} [%method:%line] - %msg%n"/>
+    <!-- 控制台输出 -->
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${log.pattern}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- 系统日志输出 -->
+    <appender name="system_log" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${log.path}/sso-auth-center.log</file>
+        <!-- 循环政策：基于时间创建日志文件 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- 日志文件名格式 -->
+            <fileNamePattern>${log.path}/sso-auth-center.log.%d{yyyy-MM-dd}</fileNamePattern>
+            <!-- 日志最大的历史 40天 -->
+            <maxHistory>40</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${log.pattern}</pattern>
+        </encoder>
+        <!--日志文件最大的大小-->
+        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+            <MaxFileSize>20MB</MaxFileSize>
+        </triggeringPolicy>
+    </appender>
+
+    <!--
+        &lt;!&ndash; 系统模块日志级别控制   trace<debug<info<warn<error &ndash;&gt;
+        <logger name="com.fast.admin" level="info"/>
+        &lt;!&ndash; Spring日志级别控制  &ndash;&gt;
+        <logger name="org.springframework" level="warn"/>
+    -->
+
+    <root level="${log.level}">
+        <appender-ref ref="console"/>
+    </root>
+
+    <!-- Spring日志级别控制  -->
+    <logger name="org.springframework" level="warn"/>
+
+    <!--系统操作日志-->
+    <root level="${log.level}">
+        <appender-ref ref="system_log"/>
+    </root>
+
+</configuration>

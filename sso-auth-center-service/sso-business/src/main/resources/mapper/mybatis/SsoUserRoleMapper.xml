@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sso.dao.mapper.SsoUserRoleMapper">
+
+    <resultMap id="BaseResultMap" type="com.sso.dao.entity.SsoUserRole">
+        <result column="sys_code" property="sysCode" jdbcType="VARCHAR"/>
+        <result column="user_id" property="userId" jdbcType="BIGINT"/>
+        <result column="role_id" property="roleId" jdbcType="BIGINT"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+      sys_code,
+      user_id,
+      role_id,
+      create_time,
+      update_time
+    </sql>
+
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM sso_user_role
+        WHERE id = #{id,jdbcType=BIGINT}
+    </select>
+
+    <select id="getRoleIdListBySysCodeAndUserId" resultType="java.lang.Long" >
+        SELECT
+        role_id
+        FROM sso_user_role
+        WHERE sys_code = #{sysCode,jdbcType=VARCHAR}
+        AND user_id = #{userId,jdbcType=BIGINT}
+    </select>
+
+    <select id="getRoleBySysCodeAndUserIdList" resultType="com.sso.dao.dto.SsoUserRoleDTO" >
+        SELECT
+          a.user_id userId,
+          GROUP_CONCAT(b.role_id) roleIds,
+          GROUP_CONCAT(b.role_name)  roleNames
+        FROM
+        sso_user_role a
+        INNER JOIN sso_role b ON a.role_id=b.role_id AND b.del_flag=0
+        WHERE a.sys_code = #{sysCode,jdbcType=VARCHAR}
+        AND a.user_id in
+        <foreach collection="userIdList" item="userId" open="(" separator="," close=")">
+            #{userId}
+        </foreach>
+        GROUP BY a.user_id
+    </select>
+
+    <select id="countByRoleIdList" resultType="com.sso.dao.dto.RoleCountDTO" parameterType="java.lang.Long">
+        SELECT
+        count(*) as count  ,role_id as roleId
+        FROM sso_user_role
+        WHERE role_id in
+        <foreach collection="roleIdList" item="roleId" open="(" separator="," close=")">
+            #{roleId}
+        </foreach>
+        GROUP BY role_id
+    </select>
+
+    <insert id="insert" parameterType="com.sso.dao.entity.SsoUserRole">
+      INSERT INTO sso_user_role
+       (
+        sys_code,
+        user_id,
+        role_id
+       )
+      values
+       (
+          #{sysCode,jdbcType=VARCHAR},
+          #{userId,jdbcType=BIGINT},
+          #{roleId,jdbcType=BIGINT}
+       )
+    </insert>
+
+    <insert id="insertSelective" parameterType="com.sso.dao.entity.SsoUserRole">
+        INSERT INTO sso_user_role
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="sysCode != null">
+                sys_code,
+            </if>
+            <if test="userId != null">
+                user_id,
+            </if>
+            <if test="roleId != null">
+                role_id,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="sysCode != null">
+                #{sysCode,jdbcType=VARCHAR},
+            </if>
+            <if test="userId != null">
+                #{userId,jdbcType=BIGINT},
+            </if>
+            <if test="roleId != null">
+                #{roleId,jdbcType=BIGINT},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+
+    <!-- 批量新增或更新-->
+    <insert id="batchSave" parameterType="java.util.List">
+        INSERT INTO sso_user_role
+        (
+        sys_code,
+        user_id,
+        role_id
+        )
+        VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.sysCode,jdbcType=VARCHAR},
+            #{item.userId,jdbcType=BIGINT},
+            #{item.roleId,jdbcType=BIGINT}
+            )
+        </foreach>
+    </insert>
+
+    <delete id="deleteBySysCodeAndUserId">
+      DELETE FROM sso_user_role
+      WHERE sys_code = #{sysCode,jdbcType=VARCHAR}
+      AND user_id = #{userId,jdbcType=BIGINT}
+    </delete>
+
+    <delete id="deleteByRoleIdAndUserId">
+      DELETE FROM sso_user_role
+      WHERE role_id = #{roleId,jdbcType=BIGINT}
+      AND user_id = #{userId,jdbcType=BIGINT}
+    </delete>
+
+    <update id="updateByPrimaryKey" parameterType="com.sso.dao.entity.SsoUserRole">
+      UPDATE sso_user_role
+      SET
+       sys_code = #{sysCode,jdbcType=VARCHAR},
+       user_id = #{userId,jdbcType=BIGINT},
+       role_id = #{roleId,jdbcType=BIGINT}
+      WHERE id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <update id="updateByPrimaryKeySelective" parameterType="com.sso.dao.entity.SsoUserRole">
+        UPDATE sso_user_role
+        <set>
+            <if test="sysCode != null">
+                sys_code = #{sysCode,jdbcType=VARCHAR},
+            </if>
+            <if test="userId != null">
+                user_id = #{userId,jdbcType=BIGINT},
+            </if>
+            <if test="roleId != null">
+                role_id = #{roleId,jdbcType=BIGINT},
+            </if>
+        </set>
+        WHERE id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <select id="countByRoleId" resultType="java.lang.Integer" parameterType="java.lang.Long">
+        SELECT
+         COUNT(*)
+        FROM sso_user_role
+        WHERE role_id = #{roleId,jdbcType=BIGINT}
+    </select>
+
+</mapper>

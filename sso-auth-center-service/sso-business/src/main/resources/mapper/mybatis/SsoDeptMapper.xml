@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sso.dao.mapper.SsoDeptMapper">
+
+    <resultMap id="BaseResultMap" type="com.sso.dao.entity.SsoDept">
+        <result column="dept_id" property="deptId" jdbcType="BIGINT"/>
+        <result column="dept_name" property="deptName" jdbcType="VARCHAR"/>
+        <result column="sys_code" property="sysCode" jdbcType="VARCHAR"/>
+        <result column="dept_parent_id" property="deptParentId" jdbcType="BIGINT"/>
+        <result column="sort_num" property="sortNum" jdbcType="INTEGER"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+        <result column="del_flag" property="delFlag" jdbcType="INTEGER"/>
+        <result column="remarks" property="remarks" jdbcType="VARCHAR"/>
+        <result column="create_by" property="createBy" jdbcType="VARCHAR"/>
+        <result column="update_by" property="updateBy" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+      dept_id,
+      dept_name,
+      sys_code,
+      dept_parent_id,
+      sort_num,
+      status,
+      del_flag,
+      remarks,
+      create_by,
+      update_by,
+      create_time,
+      update_time
+    </sql>
+
+    <sql id="A_Base_Column_List">
+      a.dept_id,
+      a.dept_name,
+      a.sys_code,
+      a.dept_parent_id,
+      a.sort_num,
+      a.status,
+      a.del_flag,
+      a.remarks,
+      a.create_by,
+      a.update_by,
+      a.create_time,
+      a.update_time
+    </sql>
+
+    <select id="getByDeptId" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM sso_dept
+        WHERE dept_id = #{deptId,jdbcType=BIGINT}
+    </select>
+
+    <select id="getDeptBySysCodeAndUserIdList" resultType="com.sso.dao.dto.SsoUserDeptDTO" parameterType="java.lang.Long">
+        SELECT
+            b.user_id userId,
+            a.dept_id deptId,
+            a.dept_name deptName
+        FROM sso_dept a
+        INNER JOIN sso_user_dept b on a.dept_id=b.dept_id
+        WHERE a.del_flag=0
+        AND a.sys_code = #{sysCode,jdbcType=VARCHAR}
+        AND b.user_id in
+        <foreach collection="userIdList" item="userId" open="(" separator="," close=")">
+            #{userId}
+        </foreach>
+    </select>
+
+    <insert id="insert" parameterType="com.sso.dao.entity.SsoDept" useGeneratedKeys="true" keyProperty="deptId"  keyColumn="dept_id">
+      INSERT INTO sso_dept
+       (
+        dept_id,
+        dept_name,
+        sys_code,
+        dept_parent_id,
+        sort_num,
+        status,
+        del_flag,
+        remarks,
+        create_by,
+        update_by,
+        create_time,
+        update_time
+       )
+      values
+       (
+          #{deptId,jdbcType=BIGINT},
+          #{deptName,jdbcType=VARCHAR},
+          #{sysCode,jdbcType=VARCHAR},
+          #{deptParentId,jdbcType=BIGINT},
+          #{sortNum,jdbcType=INTEGER},
+          #{status,jdbcType=INTEGER},
+          #{delFlag,jdbcType=INTEGER},
+          #{remarks,jdbcType=VARCHAR},
+          #{createBy,jdbcType=VARCHAR},
+          #{updateBy,jdbcType=VARCHAR},
+          #{createTime,jdbcType=TIMESTAMP},
+          #{updateTime,jdbcType=TIMESTAMP}
+       )
+    </insert>
+
+    <insert id="insertSelective" parameterType="com.sso.dao.entity.SsoDept" useGeneratedKeys="true" keyProperty="deptId"  keyColumn="dept_id">
+        INSERT INTO sso_dept
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="deptId != null">
+                dept_id,
+            </if>
+            <if test="deptName != null">
+                dept_name,
+            </if>
+            <if test="sysCode != null">
+                sys_code,
+            </if>
+            <if test="deptParentId != null">
+                dept_parent_id,
+            </if>
+            <if test="sortNum != null">
+                sort_num,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+            <if test="delFlag != null">
+                del_flag,
+            </if>
+            <if test="remarks != null">
+                remarks,
+            </if>
+            <if test="createBy != null">
+                create_by,
+            </if>
+            <if test="updateBy != null">
+                update_by,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="deptId != null">
+                #{deptId,jdbcType=BIGINT},
+            </if>
+            <if test="deptName != null">
+                #{deptName,jdbcType=VARCHAR},
+            </if>
+            <if test="sysCode != null">
+                #{sysCode,jdbcType=VARCHAR},
+            </if>
+            <if test="deptParentId != null">
+                #{deptParentId,jdbcType=BIGINT},
+            </if>
+            <if test="sortNum != null">
+                #{sortNum,jdbcType=INTEGER},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=INTEGER},
+            </if>
+            <if test="delFlag != null">
+                #{delFlag,jdbcType=INTEGER},
+            </if>
+            <if test="remarks != null">
+                #{remarks,jdbcType=VARCHAR},
+            </if>
+            <if test="createBy != null">
+                #{createBy,jdbcType=VARCHAR},
+            </if>
+            <if test="updateBy != null">
+                #{updateBy,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+
+
+    <update id="updateByDeptId" parameterType="com.sso.dao.entity.SsoDept">
+      UPDATE sso_dept
+      SET
+       dept_name = #{deptName,jdbcType=VARCHAR},
+       dept_parent_id = #{deptParentId,jdbcType=BIGINT},
+       sort_num = #{sortNum,jdbcType=INTEGER},
+       status = #{status,jdbcType=INTEGER},
+       remarks = #{remarks,jdbcType=VARCHAR},
+       update_by = #{updateBy,jdbcType=VARCHAR}
+      WHERE dept_id = #{deptId,jdbcType=BIGINT}
+    </update>
+
+
+    <update id="updateAllParentStatus">
+        UPDATE sso_dept a
+        INNER JOIN sso_dept_tree_path t ON a.dept_id = t.ancestor AND a.dept_id != #{deptId,jdbcType=BIGINT}
+        SET
+         status = #{status,jdbcType=INTEGER},
+         update_by = #{updateBy,jdbcType=VARCHAR}
+        WHERE t.descendant = #{deptId,jdbcType=BIGINT}
+    </update>
+
+    <update id="updateByDeptIdSelective" parameterType="com.sso.dao.entity.SsoDept">
+        UPDATE sso_dept
+        <set>
+            <if test="deptName != null">
+                dept_name = #{deptName,jdbcType=VARCHAR},
+            </if>
+            <if test="sysCode != null">
+                sys_code = #{sysCode,jdbcType=VARCHAR},
+            </if>
+            <if test="deptParentId != null">
+                dept_parent_id = #{deptParentId,jdbcType=BIGINT},
+            </if>
+            <if test="sortNum != null">
+                sort_num = #{sortNum,jdbcType=INTEGER},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=INTEGER},
+            </if>
+            <if test="delFlag != null">
+                del_flag = #{delFlag,jdbcType=INTEGER},
+            </if>
+            <if test="remarks != null">
+                remarks = #{remarks,jdbcType=VARCHAR},
+            </if>
+            <if test="createBy != null">
+                create_by = #{createBy,jdbcType=VARCHAR},
+            </if>
+            <if test="updateBy != null">
+                update_by = #{updateBy,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        WHERE dept_id = #{deptId,jdbcType=BIGINT}
+    </update>
+
+    <select id="listByCondition" resultMap="BaseResultMap" parameterType="com.sso.dao.query.SsoDeptQuery">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM sso_dept
+        <where>
+            <if test="sysCode != null">
+                AND sys_code = #{sysCode,jdbcType=VARCHAR}
+            </if>
+            <if test="deptParentId != null">
+                AND dept_parent_id = #{deptParentId,jdbcType=BIGINT}
+            </if>
+            <if test="deptName != null and deptName !=''">
+                AND dept_name = #{deptName,jdbcType=VARCHAR}
+            </if>
+            <if test="deptNameLike != null and deptNameLike !=''">
+                AND dept_name LIKE CONCAT(#{deptNameLike,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="excludeDeptId != null">
+                AND dept_id != #{excludeDeptId,jdbcType=BIGINT}
+            </if>
+            <if test="status != null and status !=-1">
+                AND status = #{status,jdbcType=INTEGER}
+            </if>
+            <if test="delFlag != null">
+                AND del_flag = #{delFlag,jdbcType=INTEGER}
+            </if>
+        </where>
+        ORDER by sort_num
+    </select>
+
+    <select id="countByCondition" parameterType="com.sso.dao.query.SsoDeptQuery" resultType="java.lang.Integer">
+        SELECT count(*) FROM sso_dept
+        <where>
+            <if test="sysCode != null">
+                AND sys_code = #{sysCode,jdbcType=VARCHAR}
+            </if>
+            <if test="deptParentId != null">
+                AND dept_parent_id = #{deptParentId,jdbcType=BIGINT}
+            </if>
+            <if test="deptName != null and deptName !=''">
+                AND dept_name = #{deptName,jdbcType=VARCHAR}
+            </if>
+            <if test="deptNameLike != null and deptNameLike !=''">
+                AND dept_name LIKE CONCAT(#{deptNameLike,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="excludeDeptId != null">
+                AND dept_id != #{excludeDeptId,jdbcType=BIGINT}
+            </if>
+            <if test="status != null and status !=-1">
+                AND status = #{status,jdbcType=INTEGER}
+            </if>
+            <if test="delFlag != null">
+                AND del_flag = #{delFlag,jdbcType=INTEGER}
+            </if>
+        </where>
+    </select>
+
+    <select id="countByDeptParentIdAndStatus" resultType="java.lang.Integer">
+        SELECT count(*) FROM sso_dept
+        WHERE del_flag = 0
+        AND dept_parent_id = #{deptParentId,jdbcType=BIGINT}
+        AND status = #{status,jdbcType=INTEGER}
+    </select>
+
+    <select id="countBySysCode" resultType="java.lang.Integer">
+        SELECT count(*) FROM sso_dept
+        WHERE del_flag = 0
+        AND sys_code = #{sysCode,jdbcType=VARCHAR}
+    </select>
+
+</mapper>

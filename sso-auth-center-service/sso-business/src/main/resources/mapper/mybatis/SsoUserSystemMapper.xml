@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sso.dao.mapper.SsoUserSystemMapper">
+
+    <resultMap id="BaseResultMap" type="com.sso.dao.entity.SsoUserSystem">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="user_id" property="userId" jdbcType="BIGINT"/>
+        <result column="sys_code" property="sysCode" jdbcType="VARCHAR"/>
+        <result column="sort_num" property="sortNum" jdbcType="INTEGER"/>
+        <result column="del_flag" property="delFlag" jdbcType="INTEGER"/>
+        <result column="create_by" property="createBy" jdbcType="VARCHAR"/>
+        <result column="update_by" property="updateBy" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+      id,
+      user_id,
+      sys_code,
+      sort_num,
+      del_flag,
+      create_by,
+      update_by,
+      create_time,
+      update_time
+    </sql>
+
+    <select id="getByUserIdAndSysCode" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM sso_user_system
+        WHERE del_flag = 0
+        AND user_id = #{userId,jdbcType=BIGINT}
+        AND sys_code= #{sysCode,jdbcType=VARCHAR}
+    </select>
+
+    <select id="listBySysCodeAndUserIdList" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM sso_user_system
+        WHERE del_flag = 0
+        AND sys_code= #{sysCode,jdbcType=VARCHAR}
+        AND user_id IN
+        <foreach collection="userIdList" item="userId" open="(" separator="," close=")">
+            #{userId}
+        </foreach>
+    </select>
+
+    <insert id="insert" parameterType="com.sso.dao.entity.SsoUserSystem">
+      INSERT INTO sso_user_system
+       (
+        id,
+        user_id,
+        sys_code,
+        sort_num,
+        del_flag,
+        create_by,
+        update_by,
+        create_time,
+        update_time
+       )
+      values
+       (
+          #{id,jdbcType=BIGINT},
+          #{userId,jdbcType=BIGINT},
+          #{sysCode,jdbcType=VARCHAR},
+          #{sortNum,jdbcType=INTEGER},
+          #{delFlag,jdbcType=INTEGER},
+          #{createBy,jdbcType=VARCHAR},
+          #{updateBy,jdbcType=VARCHAR},
+          #{createTime,jdbcType=TIMESTAMP},
+          #{updateTime,jdbcType=TIMESTAMP}
+       )
+    </insert>
+
+    <insert id="insertSelective" parameterType="com.sso.dao.entity.SsoUserSystem">
+        INSERT INTO sso_user_system
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="userId != null">
+                user_id,
+            </if>
+            <if test="sysCode != null">
+                sys_code,
+            </if>
+            <if test="sortNum != null">
+                sort_num,
+            </if>
+            <if test="delFlag != null">
+                del_flag,
+            </if>
+            <if test="createBy != null">
+                create_by,
+            </if>
+            <if test="updateBy != null">
+                update_by,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="userId != null">
+                #{userId,jdbcType=BIGINT},
+            </if>
+            <if test="sysCode != null">
+                #{sysCode,jdbcType=VARCHAR},
+            </if>
+            <if test="sortNum != null">
+                #{sortNum,jdbcType=INTEGER},
+            </if>
+            <if test="delFlag != null">
+                #{delFlag,jdbcType=INTEGER},
+            </if>
+            <if test="createBy != null">
+                #{createBy,jdbcType=VARCHAR},
+            </if>
+            <if test="updateBy != null">
+                #{updateBy,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+      DELETE FROM sso_user_system
+      WHERE id = #{id,jdbcType=BIGINT}
+    </delete>
+
+    <update id="updateById" parameterType="com.sso.dao.entity.SsoUserSystem">
+      UPDATE sso_user_system
+      SET
+       user_id = #{userId,jdbcType=BIGINT},
+       sys_code = #{sysCode,jdbcType=VARCHAR},
+       sort_num = #{sortNum,jdbcType=INTEGER},
+       del_flag = #{delFlag,jdbcType=INTEGER},
+       create_by = #{createBy,jdbcType=VARCHAR},
+       update_by = #{updateBy,jdbcType=VARCHAR},
+       create_time = #{createTime,jdbcType=TIMESTAMP},
+       update_time = #{updateTime,jdbcType=TIMESTAMP}
+      WHERE id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <update id="updateByIdSelective" parameterType="com.sso.dao.entity.SsoUserSystem">
+        UPDATE sso_user_system
+        <set>
+            <if test="userId != null">
+                user_id = #{userId,jdbcType=BIGINT},
+            </if>
+            <if test="sysCode != null">
+                sys_code = #{sysCode,jdbcType=VARCHAR},
+            </if>
+            <if test="sortNum != null">
+                sort_num = #{sortNum,jdbcType=INTEGER},
+            </if>
+            <if test="delFlag != null">
+                del_flag = #{delFlag,jdbcType=INTEGER},
+            </if>
+            <if test="createBy != null">
+                create_by = #{createBy,jdbcType=VARCHAR},
+            </if>
+            <if test="updateBy != null">
+                update_by = #{updateBy,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        WHERE id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <update id="updateBySysCodeAndUserIdSelective" parameterType="com.sso.dao.entity.SsoUserSystem">
+        UPDATE sso_user_system
+        <set>
+            <if test="sortNum != null">
+                sort_num = #{sortNum,jdbcType=INTEGER},
+            </if>
+            <if test="delFlag != null">
+                del_flag = #{delFlag,jdbcType=INTEGER},
+            </if>
+            <if test="createBy != null">
+                create_by = #{createBy,jdbcType=VARCHAR},
+            </if>
+            <if test="updateBy != null">
+                update_by = #{updateBy,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        WHERE  del_flag = 0
+        AND  sys_code = #{sysCode,jdbcType=VARCHAR}
+        AND  user_id = #{userId,jdbcType=BIGINT}
+    </update>
+
+
+    <select id="countBySysCode" resultType="java.lang.Integer">
+        SELECT count(*) FROM sso_user_system
+        WHERE del_flag = 0
+        AND sys_code = #{sysCode,jdbcType=VARCHAR}
+    </select>
+
+</mapper>

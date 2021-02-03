@@ -1,0 +1,453 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sso.dao.mapper.SsoUserMapper">
+
+    <resultMap id="BaseResultMap" type="com.sso.dao.entity.SsoUser">
+        <result column="user_id" property="userId" jdbcType="BIGINT"/>
+        <result column="username" property="username" jdbcType="VARCHAR"/>
+        <result column="password" property="password" jdbcType="VARCHAR"/>
+        <result column="nick_name" property="nickName" jdbcType="VARCHAR"/>
+        <result column="real_name" property="realName" jdbcType="VARCHAR"/>
+        <result column="sex" property="sex" jdbcType="INTEGER"/>
+        <result column="phone" property="phone" jdbcType="VARCHAR"/>
+        <result column="email" property="email" jdbcType="VARCHAR"/>
+        <result column="avatar" property="avatar" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+        <result column="login_ip" property="loginIp" jdbcType="VARCHAR"/>
+        <result column="last_login_time" property="lastLoginTime" jdbcType="TIMESTAMP"/>
+        <result column="del_flag" property="delFlag" jdbcType="INTEGER"/>
+        <result column="remarks" property="remarks" jdbcType="VARCHAR"/>
+        <result column="create_by" property="createBy" jdbcType="VARCHAR"/>
+        <result column="update_by" property="updateBy" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+      user_id,
+      username,
+      password,
+      nick_name,
+      real_name,
+      sex,
+      phone,
+      email,
+      avatar,
+      status,
+      login_ip,
+      last_login_time,
+      del_flag,
+      remarks,
+      create_by,
+      update_by,
+      create_time,
+      update_time
+    </sql>
+
+    <sql id="A_Base_Column_List">
+      a.user_id,
+      a.username,
+      a.password,
+      a.nick_name,
+      a.real_name,
+      a.sex,
+      a.phone,
+      a.email,
+      a.avatar,
+      a.status,
+      a.login_ip,
+      a.last_login_time,
+      a.del_flag,
+      a.remarks,
+      a.create_by,
+      a.update_by,
+      a.create_time,
+      a.update_time
+    </sql>
+
+    <select id="getByUserId" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM sso_user
+        WHERE user_id = #{userId,jdbcType=BIGINT}
+    </select>
+
+    <select id="getByUserName" resultMap="BaseResultMap" parameterType="java.lang.String">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM sso_user
+        WHERE del_flag=0
+        AND username = #{username,jdbcType=VARCHAR}
+    </select>
+
+    <select id="getByPhone" resultMap="BaseResultMap" parameterType="java.lang.String">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM sso_user
+        WHERE del_flag=0
+        AND phone = #{phone,jdbcType=VARCHAR}
+    </select>
+
+    <select id="getByEmail" resultMap="BaseResultMap" parameterType="java.lang.String">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM sso_user
+        WHERE del_flag=0
+        AND email = #{email,jdbcType=VARCHAR}
+    </select>
+
+    <select id="listByPhoneOrUserNameLike" resultMap="BaseResultMap" parameterType="java.lang.String">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM sso_user
+        WHERE del_flag=0
+        <if test="keywords != null and keywords !=''">
+            AND
+            (
+             username  LIKE CONCAT(#{keywords,jdbcType=VARCHAR},'%')
+              OR
+             phone LIKE CONCAT(#{keywords,jdbcType=VARCHAR},'%')
+            )
+        </if>
+        LIMIT #{limit}
+    </select>
+
+    <select id="countByCondition" resultType="java.lang.Integer" parameterType="com.sso.dao.query.UserPageQuery">
+        SELECT
+         COUNT(*)
+        FROM sso_user a
+        <if test="deptId != null and deptId >0">
+            INNER  JOIN  sso_user_dept b on b.user_id=a.user_id
+            INNER  JOIN  sso_dept_tree_path p on b.dept_id=p.descendant and p.ancestor = #{deptId,jdbcType=BIGINT}
+        </if>
+        <if test="roleId != null and roleId >0">
+            INNER  JOIN  sso_user_role c on c.user_id=a.user_id and c.role_id = #{roleId,jdbcType=BIGINT}
+        </if>
+        <where>
+            <if test="usernameLike != null">
+                AND a.username LIKE CONCAT(#{usernameLike,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="nickNameLike != null">
+                AND a.nick_name LIKE CONCAT(#{nickNameLike,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="realNameLike != null">
+                AND a.real_name LIKE CONCAT(#{realNameLike,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="phoneLike != null">
+                AND a.phone LIKE CONCAT(#{phoneLike,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="status != null and status !=-1">
+                AND a.status = #{status,jdbcType=INTEGER}
+            </if>
+            <if test="delFlag != null">
+                AND del_flag = #{delFlag,jdbcType=INTEGER}
+            </if>
+        </where>
+    </select>
+
+    <select id="listPageByCondition" resultMap="BaseResultMap" parameterType="com.sso.dao.query.UserPageQuery">
+        SELECT
+        <include refid="A_Base_Column_List"/>
+        FROM sso_user a
+        <if test="deptId != null and deptId >0">
+          INNER  JOIN  sso_user_dept b on b.user_id=a.user_id
+          INNER  JOIN  sso_dept_tree_path p on b.dept_id=p.descendant and p.ancestor = #{deptId,jdbcType=BIGINT}
+        </if>
+        <if test="roleId != null and roleId >0">
+        INNER  JOIN  sso_user_role c on c.user_id=a.user_id and c.role_id = #{roleId,jdbcType=BIGINT}
+        </if>
+        <where>
+            <if test="usernameLike != null">
+                AND a.username LIKE CONCAT(#{usernameLike,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="nickNameLike != null">
+                AND a.nick_name LIKE CONCAT(#{nickNameLike,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="realNameLike != null">
+                AND a.real_name LIKE CONCAT(#{realNameLike,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="phoneLike != null">
+                AND a.phone LIKE CONCAT(#{phoneLike,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="status != null and status !=-1">
+                AND a.status = #{status,jdbcType=INTEGER}
+            </if>
+            <if test="delFlag != null">
+                AND del_flag = #{delFlag,jdbcType=INTEGER}
+            </if>
+        </where>
+        ORDER BY a.status,a.update_time desc
+        LIMIT #{startRow}, #{pageSize}
+    </select>
+
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM sso_user
+        WHERE id = #{id,jdbcType=BIGINT}
+    </select>
+
+    <insert id="insert" parameterType="com.sso.dao.entity.SsoUser" useGeneratedKeys="true" keyProperty="userId"  keyColumn="user_id" >
+      INSERT INTO sso_user
+       (
+        user_id,
+        username,
+        password,
+        nick_name,
+        real_name,
+        sex,
+        phone,
+        email,
+        avatar,
+        status,
+        login_ip,
+        last_login_time,
+        del_flag,
+        remarks,
+        create_by,
+        update_by,
+        create_time,
+        update_time
+       )
+      values
+       (
+          #{userId,jdbcType=BIGINT},
+          #{username,jdbcType=VARCHAR},
+          #{password,jdbcType=VARCHAR},
+          #{nickName,jdbcType=VARCHAR},
+          #{realName,jdbcType=VARCHAR},
+          #{sex,jdbcType=INTEGER},
+          #{phone,jdbcType=VARCHAR},
+          #{email,jdbcType=VARCHAR},
+          #{avatar,jdbcType=VARCHAR},
+          #{status,jdbcType=INTEGER},
+          #{loginIp,jdbcType=VARCHAR},
+          #{lastLoginTime,jdbcType=TIMESTAMP},
+          #{delFlag,jdbcType=INTEGER},
+          #{remarks,jdbcType=VARCHAR},
+          #{createBy,jdbcType=VARCHAR},
+          #{updateBy,jdbcType=VARCHAR},
+          #{createTime,jdbcType=TIMESTAMP},
+          #{updateTime,jdbcType=TIMESTAMP}
+       )
+    </insert>
+
+    <insert id="insertSelective" parameterType="com.sso.dao.entity.SsoUser" useGeneratedKeys="true" keyProperty="userId"  keyColumn="user_id">
+        INSERT INTO sso_user
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">
+                user_id,
+            </if>
+            <if test="username != null">
+                username,
+            </if>
+            <if test="password != null">
+                password,
+            </if>
+            <if test="nickName != null">
+                nick_name,
+            </if>
+            <if test="realName != null">
+                real_name,
+            </if>
+            <if test="sex != null">
+                sex,
+            </if>
+            <if test="phone != null">
+                phone,
+            </if>
+            <if test="email != null">
+                email,
+            </if>
+            <if test="avatar != null">
+                avatar,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+            <if test="loginIp != null">
+                login_ip,
+            </if>
+            <if test="lastLoginTime != null">
+                last_login_time,
+            </if>
+            <if test="delFlag != null">
+                del_flag,
+            </if>
+            <if test="remarks != null">
+                remarks,
+            </if>
+            <if test="createBy != null">
+                create_by,
+            </if>
+            <if test="updateBy != null">
+                update_by,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">
+                #{userId,jdbcType=BIGINT},
+            </if>
+            <if test="username != null">
+                #{username,jdbcType=VARCHAR},
+            </if>
+            <if test="password != null">
+                #{password,jdbcType=VARCHAR},
+            </if>
+            <if test="nickName != null">
+                #{nickName,jdbcType=VARCHAR},
+            </if>
+            <if test="realName != null">
+                #{realName,jdbcType=VARCHAR},
+            </if>
+            <if test="sex != null">
+                #{sex,jdbcType=INTEGER},
+            </if>
+            <if test="phone != null">
+                #{phone,jdbcType=VARCHAR},
+            </if>
+            <if test="email != null">
+                #{email,jdbcType=VARCHAR},
+            </if>
+            <if test="avatar != null">
+                #{avatar,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=INTEGER},
+            </if>
+            <if test="loginIp != null">
+                #{loginIp,jdbcType=VARCHAR},
+            </if>
+            <if test="lastLoginTime != null">
+                #{lastLoginTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="delFlag != null">
+                #{delFlag,jdbcType=INTEGER},
+            </if>
+            <if test="remarks != null">
+                #{remarks,jdbcType=VARCHAR},
+            </if>
+            <if test="createBy != null">
+                #{createBy,jdbcType=VARCHAR},
+            </if>
+            <if test="updateBy != null">
+                #{updateBy,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateByUserId" parameterType="com.sso.dao.entity.SsoUser">
+      UPDATE sso_user
+      SET
+       nick_name = #{nickName,jdbcType=VARCHAR},
+       real_name = #{realName,jdbcType=VARCHAR},
+       sex = #{sex,jdbcType=INTEGER},
+       phone = #{phone,jdbcType=VARCHAR},
+       email = #{email,jdbcType=VARCHAR},
+       status = #{status,jdbcType=INTEGER},
+       remarks = #{remarks,jdbcType=VARCHAR},
+       update_by = #{updateBy,jdbcType=VARCHAR}
+       WHERE  user_id = #{userId,jdbcType=BIGINT}
+    </update>
+
+    <update id="updateProfileByUserId" parameterType="com.sso.dao.entity.SsoUser">
+      UPDATE sso_user
+      SET
+       nick_name = #{nickName,jdbcType=VARCHAR},
+       real_name = #{realName,jdbcType=VARCHAR},
+       sex = #{sex,jdbcType=INTEGER},
+       phone = #{phone,jdbcType=VARCHAR},
+       email = #{email,jdbcType=VARCHAR},
+       update_by = #{updateBy,jdbcType=VARCHAR}
+       WHERE  user_id = #{userId,jdbcType=BIGINT}
+    </update>
+
+    <update id="updateLastLogin">
+      UPDATE sso_user
+      SET
+       login_ip = #{loginIp,jdbcType=VARCHAR},
+       last_login_time = #{lastLoginTime,jdbcType=TIMESTAMP}
+       WHERE  user_id = #{userId,jdbcType=BIGINT}
+    </update>
+
+    <update id="updatePwd">
+      UPDATE sso_user
+      SET
+        password = #{password,jdbcType=VARCHAR},
+        update_by = #{updateBy,jdbcType=VARCHAR}
+       WHERE  user_id = #{userId,jdbcType=BIGINT}
+    </update>
+
+    <update id="updateAvatar">
+      UPDATE sso_user
+      SET
+        avatar = #{avatar,jdbcType=VARCHAR}
+       WHERE  user_id = #{userId,jdbcType=BIGINT}
+    </update>
+
+    <update id="updateByUserIdSelective" parameterType="com.sso.dao.entity.SsoUser">
+        UPDATE sso_user
+        <set>
+            <if test="username != null">
+                username = #{username,jdbcType=VARCHAR},
+            </if>
+            <if test="password != null">
+                password = #{password,jdbcType=VARCHAR},
+            </if>
+            <if test="nickName != null">
+                nick_name = #{nickName,jdbcType=VARCHAR},
+            </if>
+            <if test="realName != null">
+                real_name = #{realName,jdbcType=VARCHAR},
+            </if>
+            <if test="sex != null">
+                sex = #{sex,jdbcType=INTEGER},
+            </if>
+            <if test="phone != null">
+                phone = #{phone,jdbcType=VARCHAR},
+            </if>
+            <if test="email != null">
+                email = #{email,jdbcType=VARCHAR},
+            </if>
+            <if test="avatar != null">
+                avatar = #{avatar,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=INTEGER},
+            </if>
+            <if test="loginIp != null">
+                login_ip = #{loginIp,jdbcType=VARCHAR},
+            </if>
+            <if test="lastLoginTime != null">
+                last_login_time = #{lastLoginTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="delFlag != null">
+                del_flag = #{delFlag,jdbcType=INTEGER},
+            </if>
+            <if test="remarks != null">
+                remarks = #{remarks,jdbcType=VARCHAR},
+            </if>
+            <if test="updateBy != null">
+                update_by = #{updateBy,jdbcType=VARCHAR},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        WHERE user_id = #{userId,jdbcType=BIGINT}
+    </update>
+
+</mapper>

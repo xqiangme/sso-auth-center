@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.sso</groupId>
+    <artifactId>sso-auth-center-service</artifactId>
+    <version>1.0.0</version>
+
+    <name>sso-auth-center-service</name>
+    <description>程序员小强-统一认证中心</description>
+
+    <modules>
+        <module>sso-auth-center</module>
+        <module>sso-framework</module>
+        <module>sso-business</module>
+        <module>sso-common</module>
+    </modules>
+    <packaging>pom</packaging>
+
+    <properties>
+        <sso-auth-center.version>1.0.0</sso-auth-center.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <java.version>1.8</java.version>
+        <spring-boot.version>2.1.17.RELEASE</spring-boot.version>
+        <lombok.version>1.18.10</lombok.version>
+        <guava.version>30.0-jre</guava.version>
+        <bitwalker.version>1.21</bitwalker.version>
+        <maven-jar-plugin.version>3.1.1</maven-jar-plugin.version>
+        <mybatis.boot.version>1.3.2</mybatis.boot.version>
+        <druid.version>1.2.4</druid.version>
+        <kaptcha.version>2.3.2</kaptcha.version>
+        <fastjson.version>1.2.75</fastjson.version>
+        <jna.version>5.5.0</jna.version>
+        <commons.io.version>2.5</commons.io.version>
+        <commons.fileupload.version>1.3.3</commons.fileupload.version>
+        <poi.version>3.17</poi.version>
+        <jwt.version>0.9.1</jwt.version>
+        <jedis.version>3.2.0</jedis.version>
+        <hutool-all.version>5.4.3</hutool-all.version>
+        <hibernate-validator.version>6.0.20.Final</hibernate-validator.version>
+        <skipTests>true</skipTests>
+    </properties>
+
+    <!-- 依赖声明 -->
+    <dependencyManagement>
+        <dependencies>
+            <!-- SpringBoot的依赖配置-->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring-boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!-- mybatis  -->
+            <dependency>
+                <groupId>org.mybatis.spring.boot</groupId>
+                <artifactId>mybatis-spring-boot-starter</artifactId>
+                <version>${mybatis.boot.version}</version>
+            </dependency>
+
+            <!-- druid  -->
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>druid-spring-boot-starter</artifactId>
+                <version>${druid.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>redis.clients</groupId>
+                <artifactId>jedis</artifactId>
+                <version>${jedis.version}</version>
+            </dependency>
+
+            <!-- io  -->
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>${commons.io.version}</version>
+            </dependency>
+
+            <!--文件上传 -->
+            <dependency>
+                <groupId>commons-fileupload</groupId>
+                <artifactId>commons-fileupload</artifactId>
+                <version>${commons.fileupload.version}</version>
+            </dependency>
+
+            <!-- excel  -->
+            <dependency>
+                <groupId>org.apache.poi</groupId>
+                <artifactId>poi-ooxml</artifactId>
+                <version>${poi.version}</version>
+            </dependency>
+
+            <!-- fastjson -->
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>fastjson</artifactId>
+                <version>${fastjson.version}</version>
+            </dependency>
+
+            <!-- jwt 用于 token生成与解析-->
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt</artifactId>
+                <version>${jwt.version}</version>
+            </dependency>
+
+            <!-- 验证码 -->
+            <dependency>
+                <groupId>com.github.penggle</groupId>
+                <artifactId>kaptcha</artifactId>
+                <version>${kaptcha.version}</version>
+            </dependency>
+
+            <!-- guava -->
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>${guava.version}</version>
+            </dependency>
+
+            <!-- 解析客户端操作系统、浏览器等 -->
+            <dependency>
+                <groupId>eu.bitwalker</groupId>
+                <artifactId>UserAgentUtils</artifactId>
+                <version>${bitwalker.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${lombok.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>cn.hutool</groupId>
+                <artifactId>hutool-all</artifactId>
+                <version>${hutool-all.version}</version>
+            </dependency>
+
+            <!-- 参数校验 -->
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-validator</artifactId>
+                <version>${hibernate-validator.version}</version>
+            </dependency>
+
+            <!-- 核心配置模块 -->
+            <dependency>
+                <groupId>com.sso</groupId>
+                <artifactId>sso-framework</artifactId>
+                <version>${sso-auth-center.version}</version>
+            </dependency>
+
+            <!-- 业务模块-->
+            <dependency>
+                <groupId>com.sso</groupId>
+                <artifactId>sso-business</artifactId>
+                <version>${sso-auth-center.version}</version>
+            </dependency>
+
+            <!-- 通用工具-->
+            <dependency>
+                <groupId>com.sso</groupId>
+                <artifactId>sso-common</artifactId>
+                <version>${sso-auth-center.version}</version>
+            </dependency>
+
+
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+    </dependencies>
+
+
+    <build>
+        <finalName>sso-auth-center</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <executable>true</executable>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <repositories>
+        <repository>
+            <id>repo</id>
+            <url>http://mvn.taofen8.com/artifactory/repo</url>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
+        </repository>
+    </repositories>
+
+    <distributionManagement>
+        <repository>
+            <id>taofen8.repo</id>
+            <name>taofen8 Repository</name>
+            <url>http://mvn.taofen8.com/artifactory/local</url>
+        </repository>
+        <snapshotRepository>
+            <id>taofen8.repo</id>
+            <name>taofen8 Repository</name>
+            <url>http://mvn.taofen8.com/artifactory/snapshot</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+</project>

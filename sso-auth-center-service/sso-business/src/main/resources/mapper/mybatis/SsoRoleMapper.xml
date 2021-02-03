@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sso.dao.mapper.SsoRoleMapper">
+
+    <resultMap id="BaseResultMap" type="com.sso.dao.entity.SsoRole">
+        <result column="role_id" property="roleId" jdbcType="BIGINT"/>
+        <result column="sys_code" property="sysCode" jdbcType="VARCHAR"/>
+        <result column="role_name" property="roleName" jdbcType="VARCHAR"/>
+        <result column="role_key" property="roleKey" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+        <result column="sort_num" property="sortNum" jdbcType="INTEGER"/>
+        <result column="del_flag" property="delFlag" jdbcType="INTEGER"/>
+        <result column="remarks" property="remarks" jdbcType="VARCHAR"/>
+        <result column="create_by" property="createBy" jdbcType="VARCHAR"/>
+        <result column="update_by" property="updateBy" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+      role_id,
+      sys_code,
+      role_name,
+      role_key,
+      status,
+      sort_num,
+      del_flag,
+      remarks,
+      create_by,
+      update_by,
+      create_time,
+      update_time
+    </sql>
+
+    <select id="getByRoleId" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM sso_role
+        WHERE role_id = #{roleId,jdbcType=BIGINT}
+    </select>
+
+    <select id="getBySysCodeAndName" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM sso_role
+        WHERE del_flag=0
+        AND sys_code = #{sysCode,jdbcType=VARCHAR}
+        AND role_name = #{roleName,jdbcType=VARCHAR}
+    </select>
+
+    <select id="getBySysCodeAndRoleKey" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM sso_role
+        WHERE del_flag=0
+        AND sys_code = #{sysCode,jdbcType=VARCHAR}
+        AND role_key = #{roleKey,jdbcType=VARCHAR}
+    </select>
+
+    <select id="getRoleKeyBySysCodeAndUserId" resultType="java.lang.String">
+        SELECT
+         role_key
+        FROM
+         sso_role a
+        INNER JOIN sso_user_role b ON a.role_id = b.role_id
+        WHERE a.del_flag = 0 AND a.`status` = 0
+        AND a.sys_code = #{sysCode,jdbcType=VARCHAR}
+        AND b.sys_code = #{sysCode,jdbcType=VARCHAR}
+        AND b.user_id = #{userId,jdbcType=BIGINT}
+    </select>
+
+    <select id="countByCondition" parameterType="com.sso.dao.query.SsoRoleQuery" resultType="java.lang.Integer">
+        SELECT count(*) FROM sso_role
+        <where>
+            <if test="sysCode != null">
+                AND sys_code = #{sysCode,jdbcType=VARCHAR}
+            </if>
+            <if test="roleName != null and roleName !=''">
+                AND role_name = #{roleName,jdbcType=VARCHAR}
+            </if>
+            <if test="roleNameLike != null and roleNameLike !=''">
+                AND role_name LIKE CONCAT(#{roleNameLike,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="roleKeyLike != null and roleKeyLike !=''">
+                AND role_key LIKE CONCAT(#{roleKeyLike,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="excludeRoleId != null">
+                AND role_id != #{excludeRoleId,jdbcType=BIGINT}
+            </if>
+            <if test="status != null and status !=-1">
+                AND status = #{status,jdbcType=INTEGER}
+            </if>
+            <if test="delFlag != null">
+                AND del_flag = #{delFlag,jdbcType=INTEGER}
+            </if>
+        </where>
+    </select>
+
+    <select id="listPageByCondition" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM sso_role
+        <where>
+            <if test="sysCode != null">
+                AND sys_code = #{sysCode,jdbcType=VARCHAR}
+            </if>
+            <if test="roleName != null and roleName !=''">
+                AND role_name = #{roleName,jdbcType=VARCHAR}
+            </if>
+            <if test="roleNameLike != null and roleNameLike !=''">
+                AND role_name LIKE CONCAT(#{roleNameLike,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="roleKeyLike != null and roleKeyLike !=''">
+                AND role_key LIKE CONCAT(#{roleKeyLike,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="excludeRoleId != null">
+                AND role_id != #{excludeRoleId,jdbcType=BIGINT}
+            </if>
+            <if test="status != null and status !=-1">
+                AND status = #{status,jdbcType=INTEGER}
+            </if>
+            <if test="delFlag != null">
+                AND del_flag = #{delFlag,jdbcType=INTEGER}
+            </if>
+        </where>
+        ORDER BY sort_num
+        LIMIT #{startRow}, #{pageSize}
+    </select>
+
+
+    <insert id="insert" parameterType="com.sso.dao.entity.SsoRole" useGeneratedKeys="true" keyProperty="roleId"  keyColumn="role_id">
+      INSERT INTO sso_role
+       (
+        role_id,
+        sys_code,
+        role_name,
+        role_key,
+        status,
+        sort_num,
+        del_flag,
+        remarks,
+        create_by,
+        update_by
+       )
+      values
+       (
+          #{roleId,jdbcType=BIGINT},
+          #{sysCode,jdbcType=VARCHAR},
+          #{roleName,jdbcType=VARCHAR},
+          #{roleKey,jdbcType=VARCHAR},
+          #{status,jdbcType=INTEGER},
+          #{sortNum,jdbcType=INTEGER},
+          #{delFlag,jdbcType=INTEGER},
+          #{remarks,jdbcType=VARCHAR},
+          #{createBy,jdbcType=VARCHAR},
+          #{updateBy,jdbcType=VARCHAR}
+       )
+    </insert>
+
+    <insert id="insertSelective" parameterType="com.sso.dao.entity.SsoRole" useGeneratedKeys="true" keyProperty="roleId"  keyColumn="role_id">
+        INSERT INTO sso_role
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="roleId != null">
+                role_id,
+            </if>
+            <if test="sysCode != null">
+                sys_code,
+            </if>
+            <if test="roleName != null">
+                role_name,
+            </if>
+            <if test="roleKey != null">
+                role_key,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+            <if test="sortNum != null">
+                sort_num,
+            </if>
+            <if test="delFlag != null">
+                del_flag,
+            </if>
+            <if test="remarks != null">
+                remarks,
+            </if>
+            <if test="createBy != null">
+                create_by,
+            </if>
+            <if test="updateBy != null">
+                update_by,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="roleId != null">
+                #{roleId,jdbcType=BIGINT},
+            </if>
+            <if test="sysCode != null">
+                #{sysCode,jdbcType=VARCHAR},
+            </if>
+            <if test="roleName != null">
+                #{roleName,jdbcType=VARCHAR},
+            </if>
+            <if test="roleKey != null">
+                #{roleKey,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=INTEGER},
+            </if>
+            <if test="sortNum != null">
+                #{sortNum,jdbcType=INTEGER},
+            </if>
+            <if test="delFlag != null">
+                #{delFlag,jdbcType=INTEGER},
+            </if>
+            <if test="remarks != null">
+                #{remarks,jdbcType=VARCHAR},
+            </if>
+            <if test="createBy != null">
+                #{createBy,jdbcType=VARCHAR},
+            </if>
+            <if test="updateBy != null">
+                #{updateBy,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateByRoleId" parameterType="com.sso.dao.entity.SsoRole">
+      UPDATE sso_role
+      SET
+       role_name = #{roleName,jdbcType=VARCHAR},
+       role_key = #{roleKey,jdbcType=VARCHAR},
+       status = #{status,jdbcType=INTEGER},
+       sort_num = #{sortNum,jdbcType=INTEGER},
+       remarks = #{remarks,jdbcType=VARCHAR},
+       update_by = #{updateBy,jdbcType=VARCHAR}
+      WHERE  role_id = #{roleId,jdbcType=BIGINT}
+    </update>
+
+    <update id="updateByRoleIdSelective" parameterType="com.sso.dao.entity.SsoRole">
+        UPDATE sso_role
+        <set>
+            <if test="sysCode != null">
+                sys_code = #{sysCode,jdbcType=VARCHAR},
+            </if>
+            <if test="roleName != null">
+                role_name = #{roleName,jdbcType=VARCHAR},
+            </if>
+            <if test="roleKey != null">
+                role_key = #{roleKey,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=INTEGER},
+            </if>
+            <if test="sortNum != null">
+                sort_num = #{sortNum,jdbcType=INTEGER},
+            </if>
+            <if test="delFlag != null">
+                del_flag = #{delFlag,jdbcType=INTEGER},
+            </if>
+            <if test="remarks != null">
+                remarks = #{remarks,jdbcType=VARCHAR},
+            </if>
+            <if test="createBy != null">
+                create_by = #{createBy,jdbcType=VARCHAR},
+            </if>
+            <if test="updateBy != null">
+                update_by = #{updateBy,jdbcType=VARCHAR},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        WHERE  role_id = #{roleId,jdbcType=BIGINT}
+    </update>
+
+    <select id="countBySysCode" resultType="java.lang.Integer">
+        SELECT count(*) FROM sso_role
+        WHERE del_flag = 0
+        AND sys_code = #{sysCode,jdbcType=VARCHAR}
+    </select>
+
+
+</mapper>

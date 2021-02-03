@@ -1,0 +1,394 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sso.dao.mapper.SsoSystemMapper">
+
+    <resultMap id="BaseResultMap" type="com.sso.dao.entity.SsoSystem">
+        <id column="sys_id" property="sysId" jdbcType="BIGINT"/>
+        <result column="sys_code" property="sysCode" jdbcType="VARCHAR"/>
+        <result column="sys_name" property="sysName" jdbcType="VARCHAR"/>
+        <result column="sys_grant_code" property="sysGrantCode" jdbcType="VARCHAR"/>
+        <result column="sys_url" property="sysUrl" jdbcType="VARCHAR"/>
+        <result column="sys_icon" property="sysIcon" jdbcType="VARCHAR"/>
+        <result column="sys_env" property="sysEnv" jdbcType="INTEGER"/>
+        <result column="sort_num" property="sortNum" jdbcType="INTEGER"/>
+        <result column="remarks" property="remarks" jdbcType="VARCHAR"/>
+        <result column="sign_type" property="signType" jdbcType="INTEGER"/>
+        <result column="public_key" property="publicKey" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+        <result column="del_flag" property="delFlag" jdbcType="INTEGER"/>
+        <result column="create_by" property="createBy" jdbcType="VARCHAR"/>
+        <result column="update_by" property="updateBy" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+      sys_id,
+      sys_code,
+      sys_name,
+      sys_grant_code,
+      sys_url,
+      sys_icon,
+      sys_env,
+      sort_num,
+      remarks,
+      sign_type,
+      public_key,
+      status,
+      del_flag,
+      create_by,
+      update_by,
+      create_time,
+      update_time
+    </sql>
+    <sql id="A_Base_Column_List">
+      a.sys_id,
+      a.sys_code,
+      a.sys_name,
+      a.sys_grant_code,
+      a.sys_url,
+      a.sys_icon,
+      a.sys_env,
+      a.sort_num,
+      a.remarks,
+      a.sign_type,
+      a.public_key,
+      a.status,
+      a.del_flag,
+      a.create_by,
+      a.update_by,
+      a.create_time,
+      a.update_time
+    </sql>
+
+    <select id="getBySysId" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM sso_system
+        WHERE sys_id = #{sysId,jdbcType=BIGINT}
+    </select>
+
+    <select id="getBySysCode" resultMap="BaseResultMap" parameterType="java.lang.String">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM sso_system
+        WHERE del_flag=0 AND sys_code = #{sysCode,jdbcType=VARCHAR}
+    </select>
+
+    <select id="getBySysCodeList" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM sso_system
+        WHERE del_flag=0
+        AND sys_code IN
+        <foreach collection="sysCodeList" item="sysCode" open="(" separator="," close=")">
+            #{sysCode}
+        </foreach>
+    </select>
+
+    <select id="listByStatusList" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM sso_system
+        WHERE del_flag=0
+        <if test="statusList != null and statusList.size() > 0">
+            AND status IN
+            <foreach collection="statusList" item="status" open="(" separator="," close=")">
+                #{status}
+            </foreach>
+        </if>
+        ORDER by sort_num
+    </select>
+
+    <select id="listMySystemByAdmin" resultMap="BaseResultMap">
+        SELECT
+          a.sys_id,
+          a.sys_code,
+          a.sys_name,
+          a.sys_grant_code,
+          a.sys_url,
+          a.sys_icon,
+          a.sys_env,
+          ifnull(b.sort_num,a.sort_num) sort_num,
+          a.remarks,
+          a.sign_type,
+          a.public_key,
+          a.status,
+          a.del_flag,
+          b.create_by,
+          b.update_by,
+          b.create_time,
+          b.update_time
+        FROM sso_system a
+        LEFT JOIN sso_user_system b on a.sys_code=b.sys_code AND b.del_flag = 0
+        AND b.user_id = #{userId,jdbcType=BIGINT}
+        WHERE  a.del_flag = 0
+        <if test="statusList != null and statusList.size() > 0">
+            AND a.status IN
+            <foreach collection="statusList" item="status" open="(" separator="," close=")">
+                #{status}
+            </foreach>
+        </if>
+        ORDER by sort_num
+    </select>
+
+    <select id="listMySystemByUserId" resultMap="BaseResultMap">
+        SELECT
+          a.sys_id,
+          a.sys_code,
+          a.sys_name,
+          a.sys_grant_code,
+          a.sys_url,
+          a.sys_icon,
+          a.sys_env,
+          b.sort_num,
+          a.remarks,
+          a.sign_type,
+          a.public_key,
+          a.status,
+          a.del_flag,
+          b.create_by,
+          b.update_by,
+          b.create_time,
+          b.update_time
+        FROM sso_system a
+        INNER JOIN sso_user_system b on a.sys_code=b.sys_code
+        WHERE  a.del_flag = 0
+        AND b.del_flag = 0
+        AND a.status = 0
+        AND b.user_id = #{userId,jdbcType=BIGINT}
+        ORDER by b.sort_num
+    </select>
+
+    <select id="listSystemMgmtByUserId" resultMap="BaseResultMap">
+        SELECT
+        <include refid="A_Base_Column_List"/>
+        FROM sso_system a
+        INNER JOIN sso_system_manager b on a.sys_code=b.sys_code
+        LEFT JOIN sso_user_system c on a.sys_code=c.sys_code AND c.del_flag = 0
+        AND c.user_id = #{userId,jdbcType=BIGINT}
+        WHERE  a.del_flag = 0
+        AND b.del_flag = 0
+        AND b.status = 0
+        AND b.user_id = #{userId,jdbcType=BIGINT}
+        ORDER by c.sort_num
+    </select>
+
+    <insert id="insert" parameterType="com.sso.dao.entity.SsoSystem">
+      INSERT INTO sso_system
+       (
+        sys_id,
+        sys_code,
+        sys_name,
+        sys_grant_code,
+        sys_url,
+        sys_icon,
+        sys_env,
+        sort_num,
+        remarks,
+        sign_type,
+        public_key,
+        status,
+        del_flag,
+        create_by,
+        update_by
+       )
+      values
+       (
+          #{sysId,jdbcType=BIGINT},
+          #{sysCode,jdbcType=VARCHAR},
+          #{sysName,jdbcType=VARCHAR},
+          #{sysGrantCode,jdbcType=VARCHAR},
+          #{sysUrl,jdbcType=VARCHAR},
+          #{sysIcon,jdbcType=VARCHAR},
+          #{sysEnv,jdbcType=INTEGER},
+          #{sortNum,jdbcType=INTEGER},
+          #{remarks,jdbcType=VARCHAR},
+          #{signType,jdbcType=INTEGER},
+          #{publicKey,jdbcType=VARCHAR},
+          #{status,jdbcType=INTEGER},
+          #{delFlag,jdbcType=INTEGER},
+          #{createBy,jdbcType=VARCHAR},
+          #{updateBy,jdbcType=VARCHAR}
+       )
+    </insert>
+
+    <insert id="insertSelective" parameterType="com.sso.dao.entity.SsoSystem">
+        INSERT INTO sso_system
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="sysId != null">
+                sys_id,
+            </if>
+            <if test="sysCode != null">
+                sys_code,
+            </if>
+            <if test="sysName != null">
+                sys_name,
+            </if>
+            <if test="sysGrantCode != null">
+                sys_grant_code,
+            </if>
+            <if test="sysUrl != null">
+                sys_url,
+            </if>
+            <if test="sysIcon != null">
+                sys_icon,
+            </if>
+            <if test="sysEnv != null">
+                sys_env,
+            </if>
+            <if test="sortNum != null">
+                sort_num,
+            </if>
+            <if test="remarks != null">
+                remarks,
+            </if>
+            <if test="signType != null">
+                sign_type,
+            </if>
+            <if test="publicKey != null">
+                public_key,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+            <if test="delFlag != null">
+                del_flag,
+            </if>
+            <if test="createBy != null">
+                create_by,
+            </if>
+            <if test="updateBy != null">
+                update_by,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="sysId != null">
+                #{sysId,jdbcType=BIGINT},
+            </if>
+            <if test="sysCode != null">
+                #{sysCode,jdbcType=VARCHAR},
+            </if>
+            <if test="sysName != null">
+                #{sysName,jdbcType=VARCHAR},
+            </if>
+            <if test="sysGrantCode != null">
+                #{sysGrantCode,jdbcType=VARCHAR},
+            </if>
+            <if test="sysUrl != null">
+                #{sysUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="sysIcon != null">
+                #{sysIcon,jdbcType=VARCHAR},
+            </if>
+            <if test="sysEnv != null">
+                #{sysEnv,jdbcType=INTEGER},
+            </if>
+            <if test="sortNum != null">
+                #{sortNum,jdbcType=INTEGER},
+            </if>
+            <if test="remarks != null">
+                #{remarks,jdbcType=VARCHAR},
+            </if>
+            <if test="signType != null">
+                #{signType,jdbcType=INTEGER},
+            </if>
+            <if test="publicKey != null">
+                #{publicKey,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=INTEGER},
+            </if>
+            <if test="delFlag != null">
+                #{delFlag,jdbcType=INTEGER},
+            </if>
+            <if test="createBy != null">
+                #{createBy,jdbcType=VARCHAR},
+            </if>
+            <if test="updateBy != null">
+                #{updateBy,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateBySysId" parameterType="com.sso.dao.entity.SsoSystem">
+      UPDATE sso_system
+      SET
+       sys_code = #{sysCode,jdbcType=VARCHAR},
+       sys_name = #{sysName,jdbcType=VARCHAR},
+       sys_grant_code = #{sysGrantCode,jdbcType=VARCHAR},
+       sys_url = #{sysUrl,jdbcType=VARCHAR},
+       sys_icon = #{sysIcon,jdbcType=VARCHAR},
+       sys_env = #{sysEnv,jdbcType=INTEGER},
+       sort_num = #{sortNum,jdbcType=INTEGER},
+       remarks = #{remarks,jdbcType=VARCHAR},
+       status = #{status,jdbcType=INTEGER},
+       update_by = #{updateBy,jdbcType=VARCHAR}
+      WHERE sys_id = #{sysId,jdbcType=BIGINT}
+    </update>
+
+    <update id="updateSecretBySysId" parameterType="com.sso.dao.entity.SsoSystem">
+      UPDATE sso_system
+      SET
+       sign_type = #{signType,jdbcType=INTEGER},
+       public_key = #{publicKey,jdbcType=VARCHAR},
+       update_by = #{updateBy,jdbcType=VARCHAR}
+      WHERE sys_id = #{sysId,jdbcType=BIGINT}
+    </update>
+
+    <update id="updateIconBySysId">
+      UPDATE sso_system
+      SET
+       sys_icon = #{sysIcon,jdbcType=VARCHAR},
+       update_by = #{updateBy,jdbcType=VARCHAR}
+      WHERE sys_id = #{sysId,jdbcType=BIGINT}
+    </update>
+
+    <update id="updateBySysIdSelective" parameterType="com.sso.dao.entity.SsoSystem">
+        UPDATE sso_system
+        <set>
+            <if test="sysCode != null">
+                sys_code = #{sysCode,jdbcType=VARCHAR},
+            </if>
+            <if test="sysName != null">
+                sys_name = #{sysName,jdbcType=VARCHAR},
+            </if>
+            <if test="sysGrantCode != null">
+                sys_grant_code = #{sysGrantCode,jdbcType=VARCHAR},
+            </if>
+            <if test="sysUrl != null">
+                sys_url = #{sysUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="sysIcon != null">
+                sys_icon = #{sysIcon,jdbcType=VARCHAR},
+            </if>
+            <if test="sysEnv != null">
+                sys_env = #{sysEnv,jdbcType=INTEGER},
+            </if>
+            <if test="sortNum != null">
+                sort_num = #{sort,jdbcType=INTEGER},
+            </if>
+            <if test="remarks != null">
+                remarks = #{remarks,jdbcType=VARCHAR},
+            </if>
+            <if test="signType != null">
+                sign_type = #{signType,jdbcType=INTEGER},
+            </if>
+            <if test="publicKey != null">
+                public_key = #{publicKey,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=INTEGER},
+            </if>
+            <if test="delFlag != null">
+                del_flag = #{delFlag,jdbcType=INTEGER},
+            </if>
+            <if test="updateBy != null">
+                update_by = #{updateBy,jdbcType=VARCHAR},
+            </if>
+        </set>
+        WHERE sys_id = #{sysId,jdbcType=BIGINT}
+    </update>
+
+</mapper>
