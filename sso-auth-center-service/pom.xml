@@ -12,7 +12,7 @@
     <description>程序员小强-统一认证中心</description>
 
     <modules>
-        <module>sso-auth-center</module>
+        <module>sso-auth-center-admin</module>
         <module>sso-framework</module>
         <module>sso-business</module>
         <module>sso-common</module>

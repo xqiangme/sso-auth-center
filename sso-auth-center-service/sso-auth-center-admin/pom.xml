@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <packaging>jar</packaging>
-    <artifactId>sso-auth-center</artifactId>
+    <artifactId>sso-auth-center-admin</artifactId>
 
     <description>
         web服务入口
