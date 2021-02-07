@@ -12,7 +12,7 @@
     <artifactId>sso-common</artifactId>
 
     <description>
-        common通用工具
+        common 公共模块
     </description>
 
     <dependencies>

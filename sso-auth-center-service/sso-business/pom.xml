@@ -17,7 +17,7 @@
 
     <dependencies>
 
-        <!-- 通用模块 -->
+        <!-- 公共模块 -->
         <dependency>
             <groupId>com.sso</groupId>
             <artifactId>sso-common</artifactId>
