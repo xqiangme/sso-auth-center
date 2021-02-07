@@ -15,7 +15,7 @@ npm install --registry=https://registry.npm.taobao.org
 npm run dev
 ```
 
-浏览器访问 http://localhost:端口
+#浏览器访问 http://localhost:9528
 
 ## 发布
 
@@ -24,5 +24,5 @@ npm run dev
 npm run build-test
 
 # 构建生产环境
-npm run build
+npm run build-prod
 ```

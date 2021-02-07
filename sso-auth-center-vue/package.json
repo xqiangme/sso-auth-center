@@ -1,12 +1,12 @@
 {
-  "name": "vue-admin-template",
+  "name": "sso-auth-center-vue",
   "version": "4.4.0",
-  "description": "A vue admin template with Element UI & axios & iconfont & permission control & lint",
-  "author": "Pan <panfree23@gmail.com>",
+  "description": "小强认证中心",
+  "author": "xqiang",
   "scripts": {
     "dev": "vue-cli-service serve",
-    "build:prod": "vue-cli-service build",
-    "build:stage": "vue-cli-service build --mode staging",
+    "build-prod": "vue-cli-service build",
+    "build-test": "vue-cli-service build --mode test",
     "preview": "node build/index.js --preview",
     "svgo": "svgo -f src/icons/svg --config=src/icons/svgo.yml",
     "lint": "eslint --ext .js,.vue src",

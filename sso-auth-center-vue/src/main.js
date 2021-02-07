@@ -6,7 +6,7 @@ import 'element-ui/lib/theme-chalk/index.css'
 import locale from 'element-ui/lib/locale/lang/zh-CN' // lang i18n
 import Pagination from '@/components/Pagination'
 
-import { handleTree, resetForm,hasSomePermission } from '@/utils/admin-util'
+import { handleTree, resetForm } from '@/utils/admin-util'
 
 import '@/styles/index.scss' // global css
 import App from './App'
@@ -29,23 +29,9 @@ Vue.prototype.msgInfo = function(msg) {
   this.$message.info(msg)
 }
 
-/**
- * If you don't want to use mock-server
- * you want to use MockJs for mock api
- * you can execute: mockXHR()
- *
- * Currently MockJs will be used in the production environment,
- * please remove it before going online ! ! !
- */
-if (process.env.NODE_ENV === 'production') {
-  const { mockXHR } = require('../mock')
-  mockXHR()
-}
-
 // 全局方法挂载
 Vue.prototype.handleTree = handleTree
 Vue.prototype.resetForm = resetForm
-Vue.prototype.hasSomePermission = hasSomePermission
 
 // 全局组件挂载
 Vue.component('Pagination', Pagination)
