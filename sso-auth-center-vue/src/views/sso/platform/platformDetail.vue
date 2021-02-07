@@ -26,10 +26,13 @@
           </el-card>
         </el-col>
         <el-col :md="3" :lg="3" v-if="hasUpdatePermission">
-          <sysIcon :sysId="detailData.sysId" :imgUrl="detailData.sysIcon"/>
+          <sysIcon v-if="detailData.sysIcon !=='' && detailData.sysIcon !==undefined"  :sysId="detailData.sysId" :imgUrl="detailData.sysIcon"/>
+          <sysIcon  v-else :sysId="detailData.sysId" :imgUrl="detailData.sysDefaultIcon"/>
         </el-col>
         <el-col :md="3" :lg="3" v-if="!hasUpdatePermission">
-          <img :src="detailData.sysIcon" style="width: 260px; height: 160px"/>
+          <img v-if="detailData.sysIcon !=='' && detailData.sysIcon !==undefined" :src="detailData.sysIcon"
+               style="width: 260px; height: 160px"/>
+          <img v-else :src="detailData.sysDefaultIcon" style="width: 260px; height: 160px"/>
         </el-col>
       </el-row>
       <el-row :gutter="10">
@@ -122,7 +125,7 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="系统编码" prop="sysCode">
-              <el-input  readonly="true"  disabled="true" v-model="updateForm.sysCode" placeholder="请输入系统编码"/>
+              <el-input readonly="true" disabled="true" v-model="updateForm.sysCode" placeholder="请输入系统编码"/>
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -301,13 +304,13 @@ export default {
             this.detailData = response.data
             //系统图标-如果非外链则添加前缀处理
             if ('' !== this.detailData.sysIcon && !isExternal(this.detailData.sysIcon)) {
-               this.detailData.sysIcon = process.env.VUE_APP_BASE_API + this.detailData.sysIcon
+              this.detailData.sysIcon = process.env.VUE_APP_BASE_API + this.detailData.sysIcon
             }
             //处理默认图片地址
-            if (null ==  this.detailData.sysIcon || '' ===  this.detailData.sysIcon) {
-               this.detailData.sysIcon = require('@/assets/image/default-system.jpg')
+            if (null == this.detailData.sysIcon || '' === this.detailData.sysIcon) {
+              this.detailData.sysDefaultIcon = require('@/assets/image/default-system.jpg')
             }
-         }
+          }
       )
     },
     updateSystem() {

@@ -198,7 +198,7 @@ export default {
     submitForm() {
       this.$refs['addForm'].validate(valid => {
         if (valid) {
-
+          this.addForm.sysIcon='';
           this.$confirm(
               '是否确认新增,请注意!新增后系统编码将不可修改?',
               '确认警告',
