@@ -90,9 +90,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity httpSecurity) throws Exception {
 		httpSecurity
-				// CSRF禁用，因为不使用session
+				// 不使用session 禁用 CSRF
 				.csrf().disable()
-				// 认证失败处理类
+				// 认证失败处理
 				.exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
 				// 基于token，所以不需要session
 				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
@@ -110,7 +110,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				).permitAll()
 				.antMatchers("/profile/**").anonymous()
 				.antMatchers("/**/webjars/**").anonymous()
-				.antMatchers("/**/api-docs").anonymous()
+				.antMatchers("/**/static/**").anonymous()
 				.antMatchers("/**/druid/**").anonymous()
 				//开放接口不拦截-内部有验签
 				.antMatchers("/open/gateway").anonymous()

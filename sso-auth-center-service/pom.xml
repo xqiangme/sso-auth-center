@@ -165,7 +165,7 @@
                 <version>${sso-auth-center.version}</version>
             </dependency>
 
-            <!-- 通用工具-->
+            <!-- 公共模块-->
             <dependency>
                 <groupId>com.sso</groupId>
                 <artifactId>sso-common</artifactId>
