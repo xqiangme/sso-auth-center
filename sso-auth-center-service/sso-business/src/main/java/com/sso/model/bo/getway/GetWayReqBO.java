@@ -4,6 +4,7 @@ package com.sso.model.bo.getway;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import java.io.Serializable;
 
@@ -34,8 +35,7 @@ public class GetWayReqBO implements Serializable {
 	@NotBlank(message = "版本号不能为空")
 	private String version;
 
-	@NotBlank(message = "签名类型不能为空")
-	@Pattern(regexp = "[1-3]", message = "签名类型只能为1或2或3")
+	@Pattern(regexp = "[1-2]", message = "签名类型可选值为1~2")
 	private String signType;
 
 	@NotBlank(message = "请求时间戳不能为空")

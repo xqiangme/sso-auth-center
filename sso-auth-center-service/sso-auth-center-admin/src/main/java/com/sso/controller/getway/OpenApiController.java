@@ -10,7 +10,6 @@ import com.sso.common.utils.SystemClock;
 import com.sso.model.bo.getway.GetWayReqBO;
 import com.sso.service.getway.ApiClient;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -42,8 +41,8 @@ public class OpenApiController {
 	public ResultModel<?> gateway(@Valid GetWayReqBO reqBO,
 								  HttpServletRequest request) throws Throwable {
 		Map<String, Object> mapParams = WebUtils.getParametersStartingWith(request, "");
-		//日志ID (请求的唯一标识+5位随机数)
-		MDC.put("logId", String.format("[%s-%s]", reqBO.getApiRequestId(), RandomStringUtils.randomAlphanumeric(5)));
+		//日志ID (系统编码+请求的唯一标识)
+		MDC.put("logId", String.format("[%s-%s]", reqBO.getSysCode(),reqBO.getApiRequestId()));
 
 		log.info("[ 统一认证开放接口 start ] >> method={} mapParams = {}", reqBO.getMethod(), mapParams);
 		long start = SystemClock.millisClock().now();

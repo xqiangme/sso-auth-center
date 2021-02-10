@@ -7,7 +7,6 @@
         <id column="sys_id" property="sysId" jdbcType="BIGINT"/>
         <result column="sys_code" property="sysCode" jdbcType="VARCHAR"/>
         <result column="sys_name" property="sysName" jdbcType="VARCHAR"/>
-        <result column="sys_grant_code" property="sysGrantCode" jdbcType="VARCHAR"/>
         <result column="sys_url" property="sysUrl" jdbcType="VARCHAR"/>
         <result column="sys_icon" property="sysIcon" jdbcType="VARCHAR"/>
         <result column="sys_env" property="sysEnv" jdbcType="INTEGER"/>
@@ -27,7 +26,6 @@
       sys_id,
       sys_code,
       sys_name,
-      sys_grant_code,
       sys_url,
       sys_icon,
       sys_env,
@@ -46,7 +44,6 @@
       a.sys_id,
       a.sys_code,
       a.sys_name,
-      a.sys_grant_code,
       a.sys_url,
       a.sys_icon,
       a.sys_env,
@@ -106,7 +103,6 @@
           a.sys_id,
           a.sys_code,
           a.sys_name,
-          a.sys_grant_code,
           a.sys_url,
           a.sys_icon,
           a.sys_env,
@@ -138,7 +134,6 @@
           a.sys_id,
           a.sys_code,
           a.sys_name,
-          a.sys_grant_code,
           a.sys_url,
           a.sys_icon,
           a.sys_env,
@@ -181,7 +176,6 @@
         sys_id,
         sys_code,
         sys_name,
-        sys_grant_code,
         sys_url,
         sys_icon,
         sys_env,
@@ -199,7 +193,6 @@
           #{sysId,jdbcType=BIGINT},
           #{sysCode,jdbcType=VARCHAR},
           #{sysName,jdbcType=VARCHAR},
-          #{sysGrantCode,jdbcType=VARCHAR},
           #{sysUrl,jdbcType=VARCHAR},
           #{sysIcon,jdbcType=VARCHAR},
           #{sysEnv,jdbcType=INTEGER},
@@ -225,9 +218,6 @@
             </if>
             <if test="sysName != null">
                 sys_name,
-            </if>
-            <if test="sysGrantCode != null">
-                sys_grant_code,
             </if>
             <if test="sysUrl != null">
                 sys_url,
@@ -273,9 +263,6 @@
             <if test="sysName != null">
                 #{sysName,jdbcType=VARCHAR},
             </if>
-            <if test="sysGrantCode != null">
-                #{sysGrantCode,jdbcType=VARCHAR},
-            </if>
             <if test="sysUrl != null">
                 #{sysUrl,jdbcType=VARCHAR},
             </if>
@@ -317,7 +304,6 @@
       SET
        sys_code = #{sysCode,jdbcType=VARCHAR},
        sys_name = #{sysName,jdbcType=VARCHAR},
-       sys_grant_code = #{sysGrantCode,jdbcType=VARCHAR},
        sys_url = #{sysUrl,jdbcType=VARCHAR},
        sys_icon = #{sysIcon,jdbcType=VARCHAR},
        sys_env = #{sysEnv,jdbcType=INTEGER},
@@ -353,9 +339,6 @@
             </if>
             <if test="sysName != null">
                 sys_name = #{sysName,jdbcType=VARCHAR},
-            </if>
-            <if test="sysGrantCode != null">
-                sys_grant_code = #{sysGrantCode,jdbcType=VARCHAR},
             </if>
             <if test="sysUrl != null">
                 sys_url = #{sysUrl,jdbcType=VARCHAR},

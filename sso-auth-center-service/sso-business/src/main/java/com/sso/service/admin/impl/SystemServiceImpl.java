@@ -24,6 +24,7 @@ import com.sso.model.vo.platform.SystemDetailVO;
 import com.sso.model.vo.platform.SystemListVO;
 import com.sso.service.admin.SystemService;
 import com.sso.service.admin.login.PermissionService;
+import com.sso.service.base.SysConfigService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -60,6 +61,8 @@ public class SystemServiceImpl implements SystemService {
 	private SsoSystemManagerMapper ssoSystemManagerMapper;
 	@Resource
 	private SysConfigProperty sysConfigProperty;
+	@Resource
+	private SysConfigService sysConfigService;
 
 	/**
 	 * 我的平台列表
@@ -73,7 +76,7 @@ public class SystemServiceImpl implements SystemService {
 
 		List<SsoSystem> systemList = null;
 		//管理员拥有所有权限
-		if (SsoPermissionConstants.ADMIN_USER_SET.contains(loginUser.getUsername())) {
+		if (sysConfigService.getSupperAdminUserId().equals(loginUser.getUserId())) {
 			systemList = ssoSystemMapper.listMySystemByAdmin(loginUser.getUserId(), SystemStatusEnum.getEnableStatusList());
 		} else {
 			systemList = ssoSystemMapper.listMySystemByUserId(loginUser.getUserId());
@@ -140,10 +143,10 @@ public class SystemServiceImpl implements SystemService {
 
 		List<SsoSystem> systemList = null;
 		//管理员拥有所有权限
-		if (SsoPermissionConstants.ADMIN_USER_SET.contains(loginUser.getUsername())) {
+		if (sysConfigService.getSupperAdminUserId().equals(loginUser.getUser().getUserId())) {
 			systemList = ssoSystemMapper.listMySystemByAdmin(loginUser.getUser().getUserId(), SystemStatusEnum.getAllStatusList());
 		}
-		//认证中心管理员-角色拥有所有权限
+		//认证中心管理员-角色拥有所有平台管理权限
 		else if (loginUser.getRoleKeyList().contains(SsoPermissionConstants.ADMIN_ROLE_KEY)) {
 			systemList = ssoSystemMapper.listMySystemByAdmin(loginUser.getUser().getUserId(), SystemStatusEnum.getAllStatusList());
 		} else {
@@ -200,13 +203,13 @@ public class SystemServiceImpl implements SystemService {
 		//新增
 		ssoSystemMapper.insertSelective(ssoSystem);
 
-		//若非管理员-管理员拥有所有权限
-		if (SsoPermissionConstants.ADMIN_USER_SET.contains(loginUser.getUsername())) {
+		//管理员拥有所有权限
+		if (sysConfigService.getSupperAdminUserId().equals(loginUser.getUserId())) {
 			log.info("[ 平台新增完成 ] >> {}", saveBO.getLogValue());
 			return;
 		}
 
-		//为新增该平台用户-添加用户与当前系统关系
+		//若非管理员-为新增该平台用户-添加用户与当前系统关系
 		this.addUserSystemRelation(saveBO.getSysCode(), loginUser.getUserId(), saveBO);
 		//为新增该平台用户-添加系统管理权限
 		this.addSystemMgmt(saveBO.getSysCode(), loginUser.getUserId(), saveBO);
@@ -387,7 +390,6 @@ public class SystemServiceImpl implements SystemService {
 	private SsoSystem buildSsoSystem(SystemSaveBO saveBO) {
 		SsoSystem ssoSystem = new SsoSystem();
 		ssoSystem.setSysCode(saveBO.getSysCode());
-		ssoSystem.setSysGrantCode(saveBO.getSysCode());
 		ssoSystem.setSysName(saveBO.getSysName());
 		ssoSystem.setSysUrl(saveBO.getSysUrl());
 		ssoSystem.setSysIcon(saveBO.getSysIcon());

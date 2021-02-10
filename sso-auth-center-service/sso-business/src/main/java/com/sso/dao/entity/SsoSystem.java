@@ -36,11 +36,6 @@ public class SsoSystem implements Serializable {
 	private String sysName;
 
 	/**
-	 * 系统权限编码
-	 */
-	private String sysGrantCode;
-
-	/**
 	 * 系统链接
 	 */
 	private String sysUrl;

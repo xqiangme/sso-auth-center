@@ -20,6 +20,7 @@ import com.sso.framework.config.property.SysConfigProperty;
 import com.sso.model.vo.login.LoginMenuVO;
 import com.sso.model.vo.login.LoginUserInfoVO;
 import com.sso.service.base.SsoTokenService;
+import com.sso.service.base.SysConfigService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -37,14 +38,14 @@ public class SysPermissionService {
 
 	@Autowired
 	private SsoTokenService ssoTokenService;
-
 	@Resource
 	private SsoMenuMapper ssoMenuMapper;
 	@Resource
 	private SsoRoleMapper ssoRoleMapper;
 	@Resource
 	private SysConfigProperty sysConfigProperty;
-
+	@Resource
+	private SysConfigService sysConfigService;
 
 	/**
 	 * 获取登录用户信息
@@ -74,7 +75,7 @@ public class SysPermissionService {
 	public Set<String> getRolePermission(LoginUserVO user) {
 		Set<String> roles = new HashSet<>();
 		// 管理员拥有所有权限
-		if (SsoPermissionConstants.ADMIN_USER_SET.contains(user.getUsername())) {
+		if (sysConfigService.getSupperAdminUserId().equals(user.getUserId())) {
 			roles.add("**");
 		} else {
 			roles.addAll(ssoRoleMapper.getRoleKeyBySysCodeAndUserId(sysConfigProperty.getAuthSsoSysCode(), user.getUserId()));
@@ -97,7 +98,7 @@ public class SysPermissionService {
 		List<SsoMenu> menuList;
 
 		//管理员拥有所有权限
-		if (SsoPermissionConstants.ADMIN_USER_SET.contains(user.getUsername())) {
+		if (sysConfigService.getSupperAdminUserId().equals(user.getUserId())) {
 			permissionList = Collections.singleton(SsoPermissionConstants.ALL_PERMISSION);
 			menuList = ssoMenuMapper.getEnableMenuListBySysCode(sysCode);
 			//转换成树结构

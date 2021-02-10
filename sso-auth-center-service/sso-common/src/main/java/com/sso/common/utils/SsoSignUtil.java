@@ -39,7 +39,6 @@ public class SsoSignUtil {
 			//MD5 方式拼接 &secret
 			content = content + "&secret=" + secret;
 
-			log.info("[ 加签参数 ] content:{}", content);
 			//MD5加签
 			return DigestUtils.md5Hex(content);
 		} catch (Exception e) {

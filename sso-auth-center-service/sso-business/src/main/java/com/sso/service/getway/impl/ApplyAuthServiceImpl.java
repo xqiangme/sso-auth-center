@@ -79,7 +79,8 @@ public class ApplyAuthServiceImpl implements ApplyAuthService {
 		//入参token为空，说明未登录，返回扫码授权url
 		if (StringUtils.isEmpty(authBO.getSsoToken())) {
 			log.info("[ 认证失败 ] >> token 为空 ，返回认证中心登录地址 ");
-			return ApplyAuthVO.authFailNeedLogin(sysConfigProperty.getSsoLoginUrl());
+			String targetRedirectUrl = StringUtils.isNoneBlank(authBO.getRedirectUrl()) ? authBO.getRedirectUrl() : system.getSysUrl();
+			return ApplyAuthVO.authFailNeedLogin(sysConfigProperty.getSsoLoginUrl(), targetRedirectUrl);
 		}
 
 		//toke缓存key
@@ -110,7 +111,7 @@ public class ApplyAuthServiceImpl implements ApplyAuthService {
 		//刷新token有效期
 		redisCache.hSet(tokenCacheKey, loginUserInfo.getToken(), loginUserInfo, sysConfigProperty.getTokenExpireTime(), TimeUnit.MINUTES);
 
-		//刷新登录记录表效期
+		//刷新在线用户记录表效期
 		if (StringUtils.isNotBlank(loginUserInfo.getRequestId())) {
 			ssoOnlineUserMapper.refreshExpireTimeByRequestId(loginUserInfo.getRequestId(), loginUserInfo.getExpireTime());
 		}

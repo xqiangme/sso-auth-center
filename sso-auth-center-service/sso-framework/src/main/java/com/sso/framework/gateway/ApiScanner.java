@@ -42,7 +42,7 @@ public class ApiScanner implements CommandLineRunner {
 	/**
 	 * 统计扫描次数
 	 */
-	private final AtomicInteger atomicInteger = new AtomicInteger(0);
+	private final AtomicInteger methodSize = new AtomicInteger(0);
 
 	@Resource
 	private ApiContainer apiContainer;
@@ -61,7 +61,7 @@ public class ApiScanner implements CommandLineRunner {
 			//获取扫描类下所有方法
 			Method[] methods = ReflectionUtils.getAllDeclaredMethods(map.getValue().getClass());
 			for (Method method : methods) {
-				atomicInteger.incrementAndGet();
+				methodSize.incrementAndGet();
 				//找到带有OpenApi 注解的方法
 				OpenApi openApi = AnnotationUtils.findAnnotation(method, OpenApi.class);
 				if (null == openApi) {
@@ -79,14 +79,13 @@ public class ApiScanner implements CommandLineRunner {
 				LOGGER.info("Api开放接口加载成功 >> method = {} , desc={}", openApi.method(), openApi.desc());
 			}
 		}
-		LOGGER.info("Api开放接口容器加载完毕 >> size = {} loopTimes={}", apiContainer.size(), atomicInteger.get());
+		LOGGER.info("Api开放接口容器加载完毕 >> size = {} , methodSize={}", apiContainer.size(), methodSize.get());
 	}
 
 	/**
 	 * 获取业务参数对象
 	 *
 	 * @param method
-	 * @return
 	 */
 	private String getParamName(Method method) {
 		ArrayList<String> result = new ArrayList<>();

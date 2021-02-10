@@ -449,7 +449,7 @@ export default {
         sysIcon: '',
         sysEnv: 0,
         status: 0,
-        sortNum: 0,
+        sortNum: 100,
         remarks: ''
       }
       this.updateSecretForm = {

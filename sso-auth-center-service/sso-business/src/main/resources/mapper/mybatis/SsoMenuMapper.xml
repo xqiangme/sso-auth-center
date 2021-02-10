@@ -111,7 +111,8 @@
         AND a.sys_code = #{sysCode,jdbcType=VARCHAR}
         AND d.sys_code = #{sysCode,jdbcType=VARCHAR}
         AND d.user_id = #{userId,jdbcType=BIGINT}
-        OR (a.sys_code = #{sysCode,jdbcType=VARCHAR} and use_type=1 )
+        <!-- 未删除-并且启用状态+默认开放访问的菜单 -->
+        OR (a.sys_code = #{sysCode,jdbcType=VARCHAR}  AND a.del_flag = 0  AND a.`status` = 0 and a.use_type=1 )
         ORDER BY a.sort_num
     </select>
 
