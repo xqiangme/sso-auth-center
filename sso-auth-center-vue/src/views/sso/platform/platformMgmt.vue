@@ -99,6 +99,9 @@
         <el-button @click="cancel">取 消</el-button>
       </div>
     </el-dialog>
+    <el-row v-if="platformList.length<=0">
+      <p style="text-align: center"> 您还没有平台管理权限,联系管理员添加吧</p>
+    </el-row>
   </div>
 </template>
 <style scoped>

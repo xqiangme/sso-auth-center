@@ -93,8 +93,8 @@
           <el-table-column fixed type="selection" width="40" align="center" :selectable='selectInit'/>
           <el-table-column fixed label="用户ID" align="center" prop="userId" min-width="100px" show-overflow-tooltip/>
           <el-table-column fixed label="登录名" align="center" prop="username" min-width="120px" show-overflow-tooltip/>
-          <el-table-column label="用户昵称" align="center" prop="nickName" min-width="110px" show-overflow-tooltip/>
-          <el-table-column label="真实姓名" align="center" prop="realName" min-width="110px" show-overflow-tooltip/>
+          <el-table-column label="用户昵称" align="center" prop="nickName" min-width="120px" show-overflow-tooltip/>
+          <el-table-column label="真实姓名" align="center" prop="realName" min-width="120px" show-overflow-tooltip/>
           <el-table-column prop="status" label="状态" align="center" width="58" show-overflow-tooltip>
             <template slot-scope="scope">
               <span v-if="scope.row.status === 0"> <el-tag type="success" size="mini">启用</el-tag></span>

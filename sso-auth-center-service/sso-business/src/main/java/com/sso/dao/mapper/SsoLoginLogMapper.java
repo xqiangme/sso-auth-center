@@ -13,7 +13,6 @@ import java.util.List;
  * 登录日志基础mapper接口
  *
  * @author 程序员小强
- * @date 2021-01-23 10:45:22
  */
 public interface SsoLoginLogMapper {
 
@@ -22,7 +21,6 @@ public interface SsoLoginLogMapper {
 	 *
 	 * @param requestId 自增主键
 	 * @return 登录日志实体
-	 * @date 20-01-19 10:45:22
 	 */
 	SsoLoginLog getByRequestId(String requestId);
 
@@ -47,7 +45,6 @@ public interface SsoLoginLogMapper {
 	 *
 	 * @param ssoLoginLog 登录日志实体
 	 * @return 新增的行数
-	 * @date 2021-01-23 10:45:22
 	 */
 	int insert(SsoLoginLog ssoLoginLog);
 
@@ -56,25 +53,14 @@ public interface SsoLoginLogMapper {
 	 *
 	 * @param ssoLoginLog 登录日志实体
 	 * @return 新增的行数
-	 * @date 2021-01-23 10:45:22
 	 */
 	int insertSelective(SsoLoginLog ssoLoginLog);
-
-	/**
-	 * 根据自增主键删除接口
-	 *
-	 * @param id 自增主键主键
-	 * @return 删除的行数
-	 * @date 2021-01-23 10:45:22
-	 */
-	int deleteByPrimaryKey(Long id);
 
 	/**
 	 * 根据自增主键编辑接口
 	 *
 	 * @param ssoLoginLog 登录日志实体
 	 * @return 编辑的行数
-	 * @date 2021-01-23 10:45:22
 	 */
 	int updateByPrimaryKey(SsoLoginLog ssoLoginLog);
 
@@ -83,7 +69,6 @@ public interface SsoLoginLogMapper {
 	 *
 	 * @param ssoLoginLog 登录日志实体
 	 * @return 编辑的行数
-	 * @date 2021-01-23 10:45:22
 	 */
 	int updateByPrimaryKeySelective(SsoLoginLog ssoLoginLog);
 

@@ -334,6 +334,7 @@ export default {
       this.reset()
       this.getDetail()
       this.updateSecretForm.sysId = this.detailData.sysId
+      this.updateSecretForm.sysCode = this.targetSysCode
       this.updateSecretForm.sysName = this.detailData.sysName
       this.updateSecretForm.signType = this.detailData.signType
       this.updateSecretForm.publicKey = this.detailData.publicKey

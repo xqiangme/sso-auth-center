@@ -3,6 +3,7 @@ package com.sso.model.bo.platform;
 import com.sso.common.model.BaseOperateBO;
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -20,6 +21,12 @@ public class SystemUpdateSecretBO extends BaseOperateBO {
 	 */
 	@NotNull(message = "系统平台ID不为空")
 	private Long sysId;
+
+	/**
+	 * 系统编码
+	 */
+	@NotBlank(message = "系统编码不为空")
+	private String sysCode;
 
 	/**
 	 * 签名类型  0-无;1-MD5;2-RSA;

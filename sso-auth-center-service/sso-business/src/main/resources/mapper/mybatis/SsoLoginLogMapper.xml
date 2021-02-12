@@ -195,11 +195,6 @@
         </trim>
     </insert>
 
-    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-      DELETE FROM sso_login_log
-      WHERE id = #{id,jdbcType=BIGINT}
-    </delete>
-
     <update id="updateByPrimaryKey" parameterType="com.sso.dao.entity.SsoLoginLog">
       UPDATE sso_login_log
       SET

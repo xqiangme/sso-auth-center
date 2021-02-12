@@ -83,6 +83,7 @@
         WHERE del_flag=0
         AND sys_code = #{sysCode,jdbcType=VARCHAR}
         AND menu_name = #{menuName,jdbcType=VARCHAR}
+        LIMIT 1
     </select>
 
     <select id="getEnableMenuListBySysCode" resultMap="BaseResultMap">

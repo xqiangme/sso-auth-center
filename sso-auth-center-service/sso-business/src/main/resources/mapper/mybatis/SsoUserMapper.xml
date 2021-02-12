@@ -141,7 +141,7 @@
                 AND a.status = #{status,jdbcType=INTEGER}
             </if>
             <if test="delFlag != null">
-                AND del_flag = #{delFlag,jdbcType=INTEGER}
+                AND a.del_flag = #{delFlag,jdbcType=INTEGER}
             </if>
         </where>
     </select>
@@ -174,7 +174,7 @@
                 AND a.status = #{status,jdbcType=INTEGER}
             </if>
             <if test="delFlag != null">
-                AND del_flag = #{delFlag,jdbcType=INTEGER}
+                AND a.del_flag = #{delFlag,jdbcType=INTEGER}
             </if>
         </where>
         ORDER BY a.status,a.update_time desc

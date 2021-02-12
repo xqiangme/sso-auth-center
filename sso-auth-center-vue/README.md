@@ -24,5 +24,4 @@ npm run dev
 npm run build-test
 
 # 构建生产环境
-npm run build-prod
 ```

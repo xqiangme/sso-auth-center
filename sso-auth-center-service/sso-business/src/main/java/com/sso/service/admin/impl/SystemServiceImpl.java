@@ -25,7 +25,9 @@ import com.sso.model.vo.platform.SystemListVO;
 import com.sso.service.admin.SystemService;
 import com.sso.service.admin.login.PermissionService;
 import com.sso.service.base.SysConfigService;
+import com.sso.service.base.SystemCacheService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -63,6 +65,8 @@ public class SystemServiceImpl implements SystemService {
 	private SysConfigProperty sysConfigProperty;
 	@Resource
 	private SysConfigService sysConfigService;
+	@Resource
+	private SystemCacheService systemCacheService;
 
 	/**
 	 * 我的平台列表
@@ -245,6 +249,10 @@ public class SystemServiceImpl implements SystemService {
 
 		//修改平台
 		ssoSystemMapper.updateBySysId(ssoSystem);
+
+		//移除缓存
+		systemCacheService.removeSystemCache(updateBO.getSysCode());
+
 		log.info("[ 平台修改完成 ] >> {}", updateBO.getLogValue());
 
 	}
@@ -264,6 +272,8 @@ public class SystemServiceImpl implements SystemService {
 		ssoSystem.setUpdateBy(updateBO.getOperateBy());
 		//修改平台
 		ssoSystemMapper.updateSecretBySysId(ssoSystem);
+		//移除缓存
+		systemCacheService.removeSystemCache(updateBO.getSysCode());
 		log.info("[ 平台修改秘钥完成 ] >> {} ", updateBO.getLogValue());
 
 	}
@@ -294,6 +304,9 @@ public class SystemServiceImpl implements SystemService {
 		deleteSystem.setDelFlag(DelFlagEnum.DELETED.getStatus());
 		deleteSystem.setUpdateBy(deleteBO.getOperateBy());
 		ssoSystemMapper.updateBySysIdSelective(deleteSystem);
+
+		//移除缓存
+		systemCacheService.removeSystemCache(deleteSystem.getSysCode());
 		log.info("[ 平台删除完成 ] >> sysId:{} , operateBy:{}", deleteBO.getSysId(), deleteBO.getOperateBy());
 	}
 

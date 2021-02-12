@@ -65,15 +65,13 @@ public class IpAddressUtils {
 			//详细地址 示例：浙江省杭州市 电信
 			String addr = jsonObject.getString("addr");
 			if (StringUtils.isNoneBlank(addr)) {
-				addr = addr.replaceAll(province, "")
-						.replaceAll(city, "").trim();
-				return addr;
+				addr = addr.replaceAll(province, "").replaceAll(city, "").trim();
 			}
 
 			//示例：浙江省 杭州市 电信
 			return String.format("%s %s %s", province, city, addr);
 		} catch (Exception e) {
-			log.error("[ 根据IP-获取地理位置异常 ] >>  {}", ip);
+			log.error("[ 根据IP-获取地理位置异常 ] >>  {}", ip, e);
 		}
 		return UNKNOWN;
 	}

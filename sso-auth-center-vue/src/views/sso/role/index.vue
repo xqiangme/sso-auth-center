@@ -138,7 +138,7 @@
           <el-form-item label="菜单权限">
             <el-checkbox v-model="menuExpand" @change="handleCheckedTreeExpand($event)">展开/折叠</el-checkbox>
             <el-checkbox v-model="menuNodeAll" @change="handleCheckedTreeNodeAll($event)">全选/全不选</el-checkbox>
-            <el-checkbox v-model="form.menuCheckStrictly" @change="handleCheckedTreeConnect($event)">父子联动
+            <el-checkbox v-model="menuCheckAll" @change="handleCheckedTreeConnect($event)">父子联动
             </el-checkbox>
             <el-tree
                 class="tree-border"
@@ -199,16 +199,14 @@ export default {
       openDataScope: false,
       menuExpand: false,
       menuNodeAll: false,
-      deptExpand: true,
-      deptNodeAll: false,
+      //选择框父子联动
+      menuCheckAll: false,
       // 日期范围
       dateRange: [],
       // 状态数据字典
       statusOptions: [],
       // 菜单列表
       menuOptions: [],
-      // 部门列表
-      deptOptions: [],
       // 查询参数
       queryParams: {
         page: 1,
@@ -226,8 +224,6 @@ export default {
       form: {},
       // 表单JSON内容
       oldFormJson: '',
-      //选择框父子联动
-      menuCheckAll: true,
       defaultProps: {
         children: 'children',
         label: 'menuName'
@@ -291,12 +287,13 @@ export default {
       const roleId = row.roleId || this.ids
       getRoleDetail(roleId).then(response => {
         this.form = response.data
-        this.form.menuCheckStrictly = true
         this.oldFormJson = JSON.stringify(this.form)
         this.open = true
+        this.menuCheckAll=false;
         //处理已经选中
         this.$nextTick(() => {
           this.$refs.menu.setCheckedKeys(response.data.menuIdList)
+          this.menuCheckAll=true;
         })
         this.title = '修改角色'
       })
@@ -387,8 +384,6 @@ export default {
       }
       this.menuExpand = false,
           this.menuNodeAll = false,
-          this.deptExpand = true,
-          this.deptNodeAll = false,
           this.form = {
             sysCode: this.targetSysCode,
             roleId: undefined,
@@ -432,7 +427,7 @@ export default {
       this.$refs.menu.setCheckedNodes(value ? this.menuOptions : [])
     },
     // 树权限（父子联动）
-    handleCheckedTreeConnect(value, type) {
+    handleCheckedTreeConnect(value) {
       this.menuCheckAll = value ? true : false
     }
   }

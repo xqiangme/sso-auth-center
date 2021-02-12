@@ -201,6 +201,9 @@ export default {
       if (key === '' || key === null) {
         return
       }
+      if(this.$route.path === key){
+        return
+      }
       //如果是外链
       if (isExternal(key)) {
         const lastActiveIndex = sessionStorage.getItem('activeIndex')

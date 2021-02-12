@@ -3,12 +3,15 @@ import Vue from 'vue'
 import 'normalize.css/normalize.css' // A modern alternative to CSS resets
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
+import '@/styles/index.scss'
+
 import locale from 'element-ui/lib/locale/lang/zh-CN' // lang i18n
 import Pagination from '@/components/Pagination'
 
 import { handleTree, resetForm } from '@/utils/admin-util'
 
-import '@/styles/index.scss' // global css
+// global css
+
 import App from './App'
 import store from './store'
 import router from './router'
